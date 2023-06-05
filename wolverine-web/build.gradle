@@ -1,4 +1,5 @@
 dependencies {
+    implementation project(':wolverine-service')
     compileOnly 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -11,3 +12,6 @@ test {
 
 description = 'wolverine-web'
 
+enableBoot{
+    enableBootApp(project)
+}
