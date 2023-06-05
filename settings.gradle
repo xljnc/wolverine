@@ -1,0 +1,5 @@
+rootProject.name = 'wolverine'
+include 'wolverine-repository'
+include 'wolverine-service'
+include 'wolverine-web'
+
