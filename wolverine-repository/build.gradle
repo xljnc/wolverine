@@ -1,4 +1,6 @@
 dependencies {
+    implementation 'com.baomidou:mybatis-plus-boot-starter'
+    implementation 'org.nebula-contrib:ngbatis'
     compileOnly 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
