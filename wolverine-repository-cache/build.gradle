@@ -1,7 +1,4 @@
 dependencies {
-    implementation project(':wolverine-repository-db')
-    implementation project(':wolverine-repository-graph')
-    implementation project(':wolverine-repository-cache')
     compileOnly 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -12,5 +9,5 @@ test {
     useJUnitPlatform()
 }
 
-description = 'wolverine-service'
+description = 'wolverine-repository-cache'
 

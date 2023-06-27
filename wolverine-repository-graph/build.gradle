@@ -1,5 +1,4 @@
 dependencies {
-    implementation 'com.baomidou:mybatis-plus-boot-starter'
     implementation 'org.nebula-contrib:ngbatis'
     compileOnly 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
@@ -11,5 +10,5 @@ test {
     useJUnitPlatform()
 }
 
-description = 'wolverine-repository'
+description = 'wolverine-repository-graph'
 

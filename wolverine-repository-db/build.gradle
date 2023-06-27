@@ -1,7 +1,5 @@
 dependencies {
-    implementation project(':wolverine-repository-db')
-    implementation project(':wolverine-repository-graph')
-    implementation project(':wolverine-repository-cache')
+    implementation 'com.baomidou:mybatis-plus-boot-starter'
     compileOnly 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -12,5 +10,5 @@ test {
     useJUnitPlatform()
 }
 
-description = 'wolverine-service'
+description = 'wolverine-repository-db'
 

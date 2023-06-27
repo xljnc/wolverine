@@ -1,4 +1,4 @@
-package com.wt.test.wolverine.repository.common.component;
+package com.wt.test.wolverine.repository.db.common.component;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 

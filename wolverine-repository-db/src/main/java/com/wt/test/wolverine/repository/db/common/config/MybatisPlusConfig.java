@@ -1,10 +1,10 @@
-package com.wt.test.wolverine.repository.common.config;
+package com.wt.test.wolverine.repository.db.common.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.wt.test.wolverine.repository.common.component.BatchSqlInjector;
+import com.wt.test.wolverine.repository.db.common.component.BatchSqlInjector;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2020/12/29
  */
 @Configuration
-@MapperScan("${mybatis-plus.basePackages:com.wt.test.wolverine.**.dao}")
+@MapperScan("${mybatis-plus.basePackages:com.wt.test.wolverine.repository.db.**.mapper}")
 public class MybatisPlusConfig {
     
     @Value("${mybatis-plus.dbType:mysql}")
