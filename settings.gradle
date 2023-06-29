@@ -3,5 +3,4 @@ include 'wolverine-web'
 include 'wolverine-service'
 include 'wolverine-repository-db'
 include 'wolverine-repository-graph'
-include 'wolverine-repository-cache'
 
