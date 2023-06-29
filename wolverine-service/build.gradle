@@ -1,11 +1,22 @@
 dependencies {
-    implementation project(':wolverine-repository-db')
-    implementation project(':wolverine-repository-graph')
-    implementation project(':wolverine-repository-cache')
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'com.aventrix.jnanoid:jnanoid:2.0.0'
+
     compileOnly 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+
+    //mapstruct
+    implementation 'org.mapstruct:mapstruct'
+    compileOnly 'org.mapstruct:mapstruct-processor'
+    testCompileOnly 'org.mapstruct:mapstruct-processor'
+    annotationProcessor 'org.mapstruct:mapstruct-processor'
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor'
+
+    implementation project(':wolverine-repository-db')
+//    implementation project(':wolverine-repository-graph')
+    implementation project(':wolverine-repository-cache')
 }
 
 test {

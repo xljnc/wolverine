@@ -1,0 +1,10 @@
+create TABLE business
+(
+    id          BIGINT UNSIGNED auto_increment PRIMARY KEY,
+    code        varchar(25)  not null unique COMMENT 'code',
+    from_type   varchar(25)  not null comment '起点类型',
+    to_type     varchar(25)  not null comment '终点类型',
+    description varchar(100) null unique COMMENT '简介',
+    constraint uniq_from_to unique (from_type, to_type)
+) DEFAULT charset utf8mb4 comment '业务类型表';
+

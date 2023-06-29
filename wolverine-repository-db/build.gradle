@@ -1,9 +1,17 @@
 dependencies {
+    implementation 'com.mysql:mysql-connector-j'
     implementation 'com.baomidou:mybatis-plus-boot-starter'
     compileOnly 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+
+    //mapstruct
+    implementation 'org.mapstruct:mapstruct'
+    compileOnly 'org.mapstruct:mapstruct-processor'
+    testCompileOnly 'org.mapstruct:mapstruct-processor'
+    annotationProcessor 'org.mapstruct:mapstruct-processor'
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor'
 }
 
 test {
