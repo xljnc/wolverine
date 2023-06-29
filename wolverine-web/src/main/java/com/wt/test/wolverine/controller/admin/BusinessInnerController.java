@@ -6,11 +6,9 @@ import com.wt.test.wolverine.dto.BusinessDTO;
 import com.wt.test.wolverine.dto.req.BusinessCreateCommand;
 import com.wt.test.wolverine.manager.BusinessManager;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 业务类型接口
@@ -29,5 +27,10 @@ public class BusinessInnerController {
     public BaseResponse<String> createBusiness(@RequestBody @Valid BusinessCreateCommand createCommand) {
         BusinessDTO businessDTO = CommandConverter.INSTANCE.toBusinessDTO(createCommand);
         return BaseResponse.success(businessManager.createBusiness(businessDTO));
+    }
+    
+    @GetMapping("/v1/delete")
+    public BaseResponse<Boolean> deleteBusiness(@RequestParam @NotBlank(message = "业务类型code不能为空") String businessCode) {
+        return BaseResponse.success(businessManager.deleteBusiness(businessCode));
     }
 }

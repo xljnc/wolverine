@@ -1,8 +1,7 @@
-package com.wt.test.wolverine.repository.db.util;
+package com.wt.test.wolverine.util;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.*;
@@ -21,14 +20,13 @@ import java.util.stream.Collectors;
  * @date 2020/12/29
  */
 @Component
-@ConditionalOnMissingBean(RedisUtil.class)
 public class RedisUtil {
 
-    @Autowired
+    @Resource
     @Qualifier("jacksonRedisTemplate")
     private RedisTemplate<String, Object> jacksonRedisTemplate;
 
-    @Autowired
+    @Resource
     @Qualifier("stringRedisTemplate")
     private StringRedisTemplate stringRedisTemplate;
 

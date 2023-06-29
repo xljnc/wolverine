@@ -1,4 +1,4 @@
-package com.wt.test.wolverine.repository.db.common.config;
+package com.wt.test.wolverine.common.config;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,10 +18,10 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
  * redis 配置类
  *
  * @author qiyu
- * @date 2020/12/29
+ * @since 2020/12/29
  */
 @Configuration
-@ConfigurationProperties(prefix = "spring.redis")
+@ConfigurationProperties(prefix = "spring.data.redis")
 @EnableConfigurationProperties
 public class RedisConfig {
     

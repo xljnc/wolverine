@@ -32,4 +32,14 @@ public class BusinessManager {
         businessService.createBusiness(businessDbInfo);
         return businessCode;
     }
+    
+    /**
+     * 删除 业务类型
+     *
+     * @param businessCode 业务类型code
+     * @return boolean 是否成功
+     */
+    public boolean deleteBusiness(String businessCode) {
+       return businessService.deleteBusiness(businessCode);
+    }
 }

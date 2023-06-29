@@ -15,4 +15,13 @@ public interface BusinessService {
      * @return 是否成功
      */
     boolean createBusiness(BusinessDbInfo businessDbInfo);
+    
+    
+    /**
+     * 删除 业务类型
+     *
+     * @param businessCode 业务类型code
+     * @return boolean 是否成功
+     */
+    boolean deleteBusiness(String businessCode);
 }
