@@ -48,4 +48,15 @@ public class BusinessServiceImpl implements BusinessService {
         }
         return success;
     }
+    
+    /**
+     * 删除 业务类型
+     *
+     * @param businessCode 业务类型code
+     * @return boolean 是否成功
+     */
+    @Override
+    public BusinessDbInfo getBusiness(String businessCode) {
+        return null;
+    }
 }

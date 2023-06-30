@@ -1,6 +1,5 @@
 package com.wt.test.wolverine.manager;
 
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.wt.test.wolverine.converter.DtoConverter;
 import com.wt.test.wolverine.dto.BusinessDTO;
 import com.wt.test.wolverine.repository.db.domain.BusinessDbInfo;
@@ -21,12 +20,12 @@ public class BusinessManager {
     /**
      * 创建 业务类型
      *
-     * @param businessDbInfo
+     * @param businessDTO 业务类型
      * @return boolean 是否成功
      */
     public String createBusiness(BusinessDTO businessDTO) {
-        //分配code
-        String businessCode = NanoIdUtils.randomNanoId();
+//      code = from_to
+        String businessCode = businessDTO.getFromType() + "_" + businessDTO.getToType();
         businessDTO.setCode(businessCode);
         BusinessDbInfo businessDbInfo = DtoConverter.INSTANCE.toBusinessDbInfo(businessDTO);
         businessService.createBusiness(businessDbInfo);
@@ -40,6 +39,6 @@ public class BusinessManager {
      * @return boolean 是否成功
      */
     public boolean deleteBusiness(String businessCode) {
-       return businessService.deleteBusiness(businessCode);
+        return businessService.deleteBusiness(businessCode);
     }
 }

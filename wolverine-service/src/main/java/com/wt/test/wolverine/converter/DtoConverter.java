@@ -1,7 +1,9 @@
 package com.wt.test.wolverine.converter;
 
 import com.wt.test.wolverine.dto.BusinessDTO;
+import com.wt.test.wolverine.dto.RelationshipDTO;
 import com.wt.test.wolverine.repository.db.domain.BusinessDbInfo;
+import com.wt.test.wolverine.repository.db.domain.RelationshipDbInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -23,5 +25,13 @@ public interface DtoConverter {
      * @return BusinessDbInfo
      */
     BusinessDbInfo toBusinessDbInfo(BusinessDTO businessDTO);
+    
+    /**
+     * RelationshipDTO 转 RelationshipDbInfo
+     *
+     * @param relationshipDTO RelationshipDTO
+     * @return RelationshipDbInfo
+     */
+    RelationshipDbInfo toRelationshipDbInfo(RelationshipDTO relationshipDTO);
     
 }

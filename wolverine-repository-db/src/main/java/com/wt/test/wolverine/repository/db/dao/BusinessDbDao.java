@@ -25,7 +25,7 @@ public class BusinessDbDao {
     /**
      * 创建 业务类型
      *
-     * @param businessDbInfo
+     * @param businessDbInfo 业务类型
      * @return boolean 是否成功
      */
     public boolean createBusiness(BusinessDbInfo businessDbInfo) {

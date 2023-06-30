@@ -1,4 +1,4 @@
-package com.wt.test.wolverine.repository.db.domain;
+package com.wt.test.wolverine.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 业务类型 info
  * @author qiyu
  * @since 2023/6/27
  */
@@ -17,7 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BusinessDbInfo implements Serializable {
+public class RelationshipDTO implements Serializable {
     
     @Serial
     private static final long serialVersionUID = 7198501431104661998L;

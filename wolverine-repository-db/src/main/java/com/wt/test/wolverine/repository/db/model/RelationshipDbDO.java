@@ -1,27 +1,27 @@
-package com.wt.test.wolverine.repository.db.domain;
+package com.wt.test.wolverine.repository.db.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 业务类型 info
+ * 关系类型 do
+ *
  * @author qiyu
  * @since 2023/6/27
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class BusinessDbInfo implements Serializable {
+@TableName("relationship")
+public class RelationshipDbDO implements Serializable {
     
     @Serial
     private static final long serialVersionUID = 7198501431104661998L;
     
+    @TableId(type = IdType.AUTO)
     private Long id;
     
     private String code;

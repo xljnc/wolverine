@@ -9,6 +9,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
+ * 业务类型 do
  * @author qiyu
  * @since 2023/6/27
  */
