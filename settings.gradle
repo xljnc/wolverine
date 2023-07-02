@@ -1,6 +1,6 @@
 rootProject.name = 'wolverine'
-include 'wolverine-web'
-include 'wolverine-service'
-include 'wolverine-repository-db'
-include 'wolverine-repository-graph'
+include 'wolverine-interfaces'
+include 'wolverine-app'
+include 'wolverine-domain'
+include 'wolverine-infra'
 

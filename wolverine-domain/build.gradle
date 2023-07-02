@@ -1,0 +1,31 @@
+dependencies {
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.apache.commons:commons-lang3'
+
+    //lombok
+    compileOnly 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    //mapstruct
+    compileOnly 'org.mapstruct:mapstruct'
+    testCompileOnly 'org.mapstruct:mapstruct'
+    annotationProcessor 'org.mapstruct:mapstruct-processor'
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor'
+
+    //依赖项目
+    api project(':wolverine-infra')
+}
+
+test {
+    useJUnitPlatform()
+}
+
+compileJava{
+    options.compilerArgs <<"-Amapstruct.unmappedTargetPolicy=IGNORE"
+}
+
+description = 'wolverine-domain'
+
