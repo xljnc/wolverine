@@ -1,5 +1,6 @@
 dependencies {
 //    implementation 'org.nebula-contrib:ngbatis'
+    implementation 'org.redisson:redisson-spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-json'
     implementation 'com.mysql:mysql-connector-j'

@@ -4,10 +4,12 @@ import com.wt.test.wolverine.domain.entity.BusinessInfo;
 import com.wt.test.wolverine.domain.repository.cache.BusinessCacheDao;
 import com.wt.test.wolverine.domain.repository.db.BusinessDao;
 import com.wt.test.wolverine.domain.service.BusinessService;
+import com.wt.test.wolverine.infra.lock.util.LockUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 业务类型 service
@@ -19,9 +21,13 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class BusinessServiceImpl implements BusinessService {
     
+    private static final String BUSINESS_LOCK_NAME = "lock::business::%s";
+    
     private final BusinessDao businessDao;
     
     private final BusinessCacheDao businessCacheDao;
+    
+    private final LockUtil lockUtil;
     
     /**
      * 创建 业务类型
@@ -62,12 +68,51 @@ public class BusinessServiceImpl implements BusinessService {
     public BusinessInfo getBusiness(String businessType) {
         BusinessInfo businessInfo = businessCacheDao.getBusiness(businessType);
         if (Objects.isNull(businessInfo)) {
-            //TODO dcl
+            String lockName = String.format(BUSINESS_LOCK_NAME, businessType);
+            businessInfo = lockUtil.lockAndExecute(lockName, this::getBusinessWithLock, businessType);
+        }
+        if (isFakeBusiness(businessInfo)) {
+            businessInfo = null;
+        }
+        return businessInfo;
+    }
+    
+    /**
+     * 获取 业务类型,需要加锁
+     *
+     * @param businessType 业务类型type
+     * @return BusinessInfo 业务类型
+     */
+    private BusinessInfo getBusinessWithLock(String businessType) {
+        BusinessInfo businessInfo = businessCacheDao.getBusiness(businessType);
+        if (Objects.isNull(businessInfo)) {
             businessInfo = businessDao.getBusiness(businessType);
+            if (Objects.isNull(businessInfo)) {
+                //缓存假的业务类型，防穿透
+                businessInfo = createFakeBusiness(businessType);
+            }
             businessCacheDao.cacheBusiness(businessInfo);
         }
         return businessInfo;
     }
     
+    /**
+     * 创建假的 业务类型
+     *
+     * @param businessType 业务类型type
+     * @return BusinessInfo 业务类型
+     */
+    private static BusinessInfo createFakeBusiness(String businessType) {
+        return BusinessInfo.builder().type(businessType).build();
+    }
     
+    /**
+     * 判断是否假的 业务类型
+     *
+     * @param businessInfo 业务类型
+     * @return 是否假的 业务类型
+     */
+    private static boolean isFakeBusiness(BusinessInfo businessInfo) {
+        return Optional.ofNullable(businessInfo).map(BusinessInfo::getId).isEmpty();
+    }
 }
