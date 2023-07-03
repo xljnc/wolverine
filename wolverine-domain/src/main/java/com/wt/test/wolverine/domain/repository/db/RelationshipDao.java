@@ -10,6 +10,8 @@ import com.wt.test.wolverine.infra.db.model.RelationshipDO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Objects;
+
 /**
  * RelationshipDao
  *
@@ -32,6 +34,23 @@ public class RelationshipDao {
         RelationshipDO relationshipDO = EntityConverter.INSTANCE.toRelationshipDO(relationshipDbInfo);
         relationshipMapper.insert(relationshipDO);
         return relationshipDO.getId();
+    }
+    
+    /**
+     * 获取 关系类型
+     *
+     * @param relationshipCode 关系类型code
+     * @return RelationshipInfo 关系类型
+     */
+    public RelationshipInfo getRelationship(String relationshipCode) {
+        LambdaQueryWrapper<RelationshipDO> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(RelationshipDO::getCode, relationshipCode);
+        RelationshipDO relationshipDO = relationshipMapper.selectOne(queryWrapper);
+        RelationshipInfo relationshipInfo = null;
+        if (Objects.nonNull(relationshipDO)) {
+            relationshipInfo = EntityConverter.INSTANCE.toRelationshipInfo(relationshipDO);
+        }
+        return relationshipInfo;
     }
     
     /**

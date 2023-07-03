@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 /**
  * 关系类型 manager
  *
@@ -34,6 +36,20 @@ public class RelationshipManager {
         RelationshipInfo relationshipInfo = DtoConverter.INSTANCE.toRelationshipDbInfo(relationshipDTO);
         relationshipService.createRelationship(relationshipInfo);
         return relationshipCode;
+    }
+    
+    /**
+     * 创建 关系类型
+     *
+     * @param relationshipCode 关系类型code
+     * @return 关系类型
+     */
+    public RelationshipDTO getRelationship(String relationshipCode) {
+        RelationshipInfo relationshipInfo = relationshipService.getRelationship(relationshipCode);
+        if (Objects.isNull(relationshipInfo)) {
+            return null;
+        }
+        return DtoConverter.INSTANCE.toRelationshipDTO(relationshipInfo);
     }
     
     /**

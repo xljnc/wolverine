@@ -42,4 +42,12 @@ public interface DtoConverter {
      */
     RelationshipInfo toRelationshipDbInfo(RelationshipDTO relationshipDTO);
     
+    /**
+     * RelationshipInfo 转 RelationshipDTO
+     *
+     * @param relationshipInfo RelationshipInfo
+     * @return RelationshipDTO
+     */
+    RelationshipDTO toRelationshipDTO(RelationshipInfo relationshipInfo);
+    
 }

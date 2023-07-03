@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 /**
- * do 转换器
+ * entity 转换器
  *
  * @author qiyu
  * @since 2023/6/29
@@ -42,4 +42,11 @@ public interface EntityConverter {
      */
     RelationshipDO toRelationshipDO(RelationshipInfo relationshipInfo);
     
+    /**
+     * RelationshipDO 转 RelationshipInfo
+     *
+     * @param relationshipDO RelationshipDO
+     * @return RelationshipInfo
+     */
+    RelationshipInfo toRelationshipInfo(RelationshipDO relationshipDO);
 }

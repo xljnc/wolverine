@@ -35,7 +35,7 @@ public class RelationshipInnerController {
     }
     
     @GetMapping("/v1/get")
-    public BaseResponse<Boolean> getRelationship(@RequestParam @NotBlank(message = "关系类型code不能为空") String relationshipCode) {
-        return BaseResponse.success(relationshipManager.deleteRelationship(relationshipCode));
+    public BaseResponse<RelationshipDTO> getRelationship(@RequestParam @NotBlank(message = "关系类型code不能为空") String relationshipCode) {
+        return BaseResponse.success(relationshipManager.getRelationship(relationshipCode));
     }
 }

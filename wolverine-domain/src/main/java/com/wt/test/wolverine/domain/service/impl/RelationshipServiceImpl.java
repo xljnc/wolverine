@@ -1,11 +1,14 @@
 package com.wt.test.wolverine.domain.service.impl;
 
 import com.wt.test.wolverine.domain.entity.RelationshipInfo;
+import com.wt.test.wolverine.domain.repository.cache.RelationshipCacheDao;
 import com.wt.test.wolverine.domain.repository.db.RelationshipDao;
 import com.wt.test.wolverine.domain.service.RelationshipService;
 import com.wt.test.wolverine.infra.cache.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * 关系类型 service
@@ -17,9 +20,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RelationshipServiceImpl implements RelationshipService {
     
-    private static final String RELATIONSHIP_REDIS_KEY = "relationship::%s";
-    
     private final RelationshipDao relationshipDao;
+    
+    private final RelationshipCacheDao relationshipCacheDao;
     
     private final RedisUtil redisUtil;
     
@@ -47,8 +50,8 @@ public class RelationshipServiceImpl implements RelationshipService {
     public boolean deleteRelationship(String relationshipCode) {
         boolean success = relationshipDao.deleteRelationship(relationshipCode);
         if (success) {
-            String relationshipRedisKey = createRelationshipRedisKey(relationshipCode);
-            redisUtil.deleteKey(relationshipRedisKey);
+            relationshipCacheDao.deleteRelationship(relationshipCode);
+            //TODO 图数据库里删除edge-type
         }
         return success;
     }
@@ -61,18 +64,12 @@ public class RelationshipServiceImpl implements RelationshipService {
      */
     @Override
     public RelationshipInfo getRelationship(String relationshipCode) {
-        String relationshipRedisKey = createRelationshipRedisKey(relationshipCode);
-        redisUtil.getString(relationshipRedisKey);
-        return null;
-    }
-    
-    /**
-     * 组装 关系类型 redis key
-     *
-     * @param relationshipCode 关系类型code
-     * @return 关系类型 redis key
-     */
-    private static String createRelationshipRedisKey(String relationshipCode) {
-        return String.format(RELATIONSHIP_REDIS_KEY, relationshipCode);
+        RelationshipInfo relationshipInfo = relationshipCacheDao.getRelationship(relationshipCode);
+        if (Objects.isNull(relationshipInfo)) {
+            //TODO dcl
+            relationshipInfo = relationshipDao.getRelationship(relationshipCode);
+            relationshipCacheDao.cacheRelationship(relationshipInfo);
+        }
+        return relationshipInfo;
     }
 }
