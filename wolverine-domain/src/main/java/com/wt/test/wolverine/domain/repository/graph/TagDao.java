@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 /**
+ * Tag repository
  * @author qiyu
  * @since 2023/7/6
  */

@@ -3,6 +3,7 @@ package com.wt.test.wolverine.domain.service.impl;
 import com.wt.test.wolverine.domain.entity.RelationshipInfo;
 import com.wt.test.wolverine.domain.repository.cache.RelationshipCacheDao;
 import com.wt.test.wolverine.domain.repository.db.RelationshipDao;
+import com.wt.test.wolverine.domain.repository.graph.EdgeTypeDao;
 import com.wt.test.wolverine.domain.service.RelationshipService;
 import com.wt.test.wolverine.infra.lock.util.LockUtil;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 关系类型 service
@@ -27,7 +30,12 @@ public class RelationshipServiceImpl implements RelationshipService {
     
     private final RelationshipCacheDao relationshipCacheDao;
     
+    private final EdgeTypeDao edgeTypeDao;
+    
     private final LockUtil lockUtil;
+    
+    private final ThreadPoolExecutor commonExecutor;
+    
     
     /**
      * 创建 关系类型
@@ -38,7 +46,10 @@ public class RelationshipServiceImpl implements RelationshipService {
     @Override
     public Long createRelationship(RelationshipInfo relationshipInfo) {
         Long relationId = relationshipDao.createRelationship(relationshipInfo);
-        //TODO 图数据库里创建edge-type
+        CompletableFuture.supplyAsync(() -> {
+            edgeTypeDao.createEdgeType(relationshipInfo.getCode(), relationshipInfo.getDescription());
+            return null;
+        }, commonExecutor);
         return relationId;
     }
     
@@ -53,7 +64,10 @@ public class RelationshipServiceImpl implements RelationshipService {
         boolean success = relationshipDao.deleteRelationship(relationshipCode);
         if (success) {
             relationshipCacheDao.deleteRelationship(relationshipCode);
-            //TODO 图数据库里删除edge-type
+            CompletableFuture.supplyAsync(() -> {
+                edgeTypeDao.deleteEdgeType(relationshipCode);
+                return null;
+            }, commonExecutor);
         }
         return success;
     }

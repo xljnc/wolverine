@@ -1,0 +1,9 @@
+<mapper namespace="com.wt.test.wolverine.infra.graph.dao.EdgeTypeMapper">
+    <insert id="createEdgeType">
+        CREATE EDGE IF NOT EXISTS ${ name } () comment = '${ description }'
+    </insert>
+
+    <delete id="deleteEdgeType">
+        DROP EDGE IF EXISTS ${ name }
+    </delete>
+</mapper>
