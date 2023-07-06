@@ -47,12 +47,12 @@ nebula:
     session-life-length: 300000
     check-fixed-rate: 300000
     use-session-pool: true
-  hosts: 127.0.0.1:19669, 127.0.0.1:9669
+  hosts: 127.0.0.1:9669
   username: root
   password: nebula
-  space: test
+  space: qiyu
   pool-config:
-    min-conns-size: 0
+    min-conns-size: 3
     max-conns-size: 10
     timeout: 0
     idle-time: 0
@@ -60,3 +60,11 @@ nebula:
     wait-time: 0
     min-cluster-health-rate: 1.0
     enable-ssl: false
+
+cql:
+  parser:
+    mapper-locations: mapper/**/*.xml
+
+logging:
+  level:
+    org.nebula.contrib: DEBUG

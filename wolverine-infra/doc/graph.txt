@@ -1,0 +1,6 @@
+##创建图空间
+CREATE SPACE IF NOT EXISTS qiyu ( \
+    partition_num = 2, \
+    replica_factor = 1, \
+    vid_type = FIXED_STRING(128) \
+    ) COMMENT = '测试图空间-qiyu';

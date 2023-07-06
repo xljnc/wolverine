@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author qiyu
  * @since 2023/6/6
  */
-@SpringBootApplication(scanBasePackages = {"com.wt.test.wolverine"})
+@SpringBootApplication(scanBasePackages = {"com.wt.test.wolverine","org.nebula"})
 public class WolverineApplication {
     
     public static void main(String[] args) {
