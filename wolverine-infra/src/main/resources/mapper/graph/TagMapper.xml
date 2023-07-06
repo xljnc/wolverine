@@ -1,0 +1,9 @@
+<mapper namespace="com.wt.test.wolverine.infra.graph.dao.TagMapper">
+    <insert id="createTag">
+        CREATE TAG IF NOT EXISTS ${ name } () comment = '${ description }'
+    </insert>
+
+    <delete id="deleteTag">
+        DROP TAG IF EXISTS ${ name }
+    </delete>
+</mapper>

@@ -3,6 +3,7 @@ package com.wt.test.wolverine.domain.service.impl;
 import com.wt.test.wolverine.domain.entity.BusinessInfo;
 import com.wt.test.wolverine.domain.repository.cache.BusinessCacheDao;
 import com.wt.test.wolverine.domain.repository.db.BusinessDao;
+import com.wt.test.wolverine.domain.repository.graph.TagDao;
 import com.wt.test.wolverine.domain.service.BusinessService;
 import com.wt.test.wolverine.infra.lock.util.LockUtil;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 业务类型 service
@@ -27,7 +30,11 @@ public class BusinessServiceImpl implements BusinessService {
     
     private final BusinessCacheDao businessCacheDao;
     
+    private final TagDao tagDao;
+    
     private final LockUtil lockUtil;
+    
+    private final ThreadPoolExecutor commonExecutor;
     
     /**
      * 创建 业务类型
@@ -38,7 +45,10 @@ public class BusinessServiceImpl implements BusinessService {
     @Override
     public long createBusiness(BusinessInfo businessInfo) {
         Long businessId = businessDao.createBusiness(businessInfo);
-        //TODO 图数据库里创建tag
+        CompletableFuture.supplyAsync(() -> {
+            tagDao.createTag(businessInfo.getType(),businessInfo.getDescription());
+            return null;
+        }, commonExecutor);
         return businessId;
     }
     
@@ -53,8 +63,10 @@ public class BusinessServiceImpl implements BusinessService {
         boolean success = businessDao.deleteBusiness(businessType);
         if (success) {
             businessCacheDao.deleteBusinessCache(businessType);
-            //TODO 图数据库里删除tag
-        }
+            CompletableFuture.supplyAsync(() -> {
+                tagDao.deleteTag(businessType);
+                return null;
+            }, commonExecutor);        }
         return success;
     }
     

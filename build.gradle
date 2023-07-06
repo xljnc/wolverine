@@ -20,6 +20,7 @@ apply plugin: "qiyuSpringBootPlugin"
 allprojects {
     dependencyManagement {
         dependencies {
+            dependency group: 'org.antlr', name: 'antlr4-runtime', version: '4.7.2'
             dependency group: 'org.redisson', name: 'redisson-spring-boot-starter', version: '3.22.1'
             dependency group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
             dependency group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.33'

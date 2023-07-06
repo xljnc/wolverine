@@ -1,8 +1,11 @@
 dependencies {
+    runtimeOnly 'org.antlr:antlr4-runtime'
+    testRuntimeOnly 'org.antlr:antlr4-runtime'
     implementation 'org.nebula-contrib:ngbatis'
     implementation 'org.redisson:redisson-spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-json'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'com.mysql:mysql-connector-j'
     api 'com.baomidou:mybatis-plus-boot-starter'
 
