@@ -1,5 +1,5 @@
 dependencies {
-
+    implementation 'cn.hutool:hutool-all'
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.apache.commons:commons-lang3'
 

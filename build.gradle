@@ -20,6 +20,8 @@ apply plugin: "qiyuSpringBootPlugin"
 allprojects {
     dependencyManagement {
         dependencies {
+            dependency group: 'javax.persistence', name: 'persistence-api', version: '1.0.2'
+            dependency group: 'cn.hutool', name: 'hutool-all', version: '5.8.20'
             dependency group: 'org.antlr', name: 'antlr4-runtime', version: '4.7.2'
             dependency group: 'org.redisson', name: 'redisson-spring-boot-starter', version: '3.22.1'
             dependency group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'

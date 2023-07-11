@@ -45,3 +45,4 @@ bin/
 /*/src/main/generated/
 
 /asm-debug\\com/
+/asm-debug/

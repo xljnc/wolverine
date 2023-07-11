@@ -22,7 +22,7 @@ public class BusinessCreateCommand implements Serializable {
     @Serial
     private static final long serialVersionUID = -5412232584900539946L;
     
-    @NotBlank(message = "业务类型")
+    @NotBlank(message = "业务类型不能为空")
     private String type;
     
     private String description;

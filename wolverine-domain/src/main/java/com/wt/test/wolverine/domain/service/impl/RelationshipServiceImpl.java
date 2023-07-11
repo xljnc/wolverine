@@ -1,5 +1,6 @@
 package com.wt.test.wolverine.domain.service.impl;
 
+import com.wt.test.wolverine.domain.common.CommonConstants;
 import com.wt.test.wolverine.domain.entity.RelationshipInfo;
 import com.wt.test.wolverine.domain.repository.cache.RelationshipCacheDao;
 import com.wt.test.wolverine.domain.repository.db.RelationshipDao;
@@ -50,6 +51,8 @@ public class RelationshipServiceImpl implements RelationshipService {
             edgeTypeDao.createEdgeType(relationshipInfo.getCode(), relationshipInfo.getDescription());
             return null;
         }, commonExecutor);
+        //清除缓存，防止缓存了假的关系类型
+        relationshipCacheDao.deleteRelationship(relationshipInfo.getCode());
         return relationId;
     }
     
@@ -85,6 +88,9 @@ public class RelationshipServiceImpl implements RelationshipService {
             String lockName = String.format(RELATIONSHIP_LOCK_NAME, relationshipCode);
             relationshipInfo = lockUtil.lockAndExecute(lockName, this::getRelationshipWithLock, relationshipCode);
         }
+        if (isFakeRelationship(relationshipInfo)) {
+            relationshipInfo = null;
+        }
         return relationshipInfo;
     }
     
@@ -101,8 +107,10 @@ public class RelationshipServiceImpl implements RelationshipService {
             if (Objects.isNull(relationshipInfo)) {
                 //缓存假的业务类型，防穿透
                 relationshipInfo = createFakeRelationship(relationshipCode);
+                relationshipCacheDao.cacheRelationship(relationshipInfo, CommonConstants.FAKE_CACHE_TIME, CommonConstants.FAKE_CACHE_TIME_UNIT);
+            } else {
+                relationshipCacheDao.cacheRelationship(relationshipInfo);
             }
-            relationshipCacheDao.cacheRelationship(relationshipInfo);
         }
         return relationshipInfo;
     }

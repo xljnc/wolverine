@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * RelationshipCacheDao
  *
@@ -32,6 +34,19 @@ public class RelationshipCacheDao {
         String relationshipRedisKey = createRelationshipRedisKey(relationshipInfo.getCode());
         String relationshipStr = jsonUtil.writeValueAsString(relationshipInfo);
         redisUtil.setString(relationshipRedisKey, relationshipStr);
+    }
+    
+    /**
+     * 缓存 关系类型
+     *
+     * @param relationshipInfo 关系类型
+     * @param duration         缓存时间
+     * @param timeUnit         TimeUnit
+     */
+    public void cacheRelationship(RelationshipInfo relationshipInfo, Long duration, TimeUnit timeUnit) {
+        String relationshipRedisKey = createRelationshipRedisKey(relationshipInfo.getCode());
+        String relationshipStr = jsonUtil.writeValueAsString(relationshipInfo);
+        redisUtil.setString(relationshipRedisKey, relationshipStr, duration, timeUnit);
     }
     
     /**

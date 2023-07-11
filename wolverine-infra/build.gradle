@@ -1,4 +1,5 @@
 dependencies {
+    implementation 'javax.persistence:persistence-api'
     runtimeOnly 'org.antlr:antlr4-runtime'
     testRuntimeOnly 'org.antlr:antlr4-runtime'
     implementation 'org.nebula-contrib:ngbatis'

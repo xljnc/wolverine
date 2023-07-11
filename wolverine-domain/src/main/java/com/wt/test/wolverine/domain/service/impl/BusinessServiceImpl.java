@@ -1,5 +1,6 @@
 package com.wt.test.wolverine.domain.service.impl;
 
+import com.wt.test.wolverine.domain.common.CommonConstants;
 import com.wt.test.wolverine.domain.entity.BusinessInfo;
 import com.wt.test.wolverine.domain.repository.cache.BusinessCacheDao;
 import com.wt.test.wolverine.domain.repository.db.BusinessDao;
@@ -46,9 +47,11 @@ public class BusinessServiceImpl implements BusinessService {
     public long createBusiness(BusinessInfo businessInfo) {
         Long businessId = businessDao.createBusiness(businessInfo);
         CompletableFuture.supplyAsync(() -> {
-            tagDao.createTag(businessInfo.getType(),businessInfo.getDescription());
+            tagDao.createTag(businessInfo.getType(), businessInfo.getDescription());
             return null;
         }, commonExecutor);
+        //清除缓存，防止缓存了假的业务类型
+        businessCacheDao.deleteBusinessCache(businessInfo.getType());
         return businessId;
     }
     
@@ -66,7 +69,8 @@ public class BusinessServiceImpl implements BusinessService {
             CompletableFuture.supplyAsync(() -> {
                 tagDao.deleteTag(businessType);
                 return null;
-            }, commonExecutor);        }
+            }, commonExecutor);
+        }
         return success;
     }
     
@@ -102,8 +106,10 @@ public class BusinessServiceImpl implements BusinessService {
             if (Objects.isNull(businessInfo)) {
                 //缓存假的业务类型，防穿透
                 businessInfo = createFakeBusiness(businessType);
+                businessCacheDao.cacheBusiness(businessInfo, CommonConstants.FAKE_CACHE_TIME, CommonConstants.FAKE_CACHE_TIME_UNIT);
+            } else {
+                businessCacheDao.cacheBusiness(businessInfo);
             }
-            businessCacheDao.cacheBusiness(businessInfo);
         }
         return businessInfo;
     }

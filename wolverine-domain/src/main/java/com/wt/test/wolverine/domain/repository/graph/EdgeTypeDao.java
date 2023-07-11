@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class EdgeTypeDao {
+    
     private final EdgeTypeMapper edgeTypeMapper;
     
     /**

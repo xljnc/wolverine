@@ -10,25 +10,27 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 关系类型 创建 command
+ * 关系 创建 command
+ *
  * @author qiyu
- * @since 2023/6/29
+ * @since 2023/7/7
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RelationshipCreateCommand implements Serializable {
+public class RelationCreateCommand implements Serializable {
     
     @Serial
     private static final long serialVersionUID = -5918236162149992717L;
     
-    @NotBlank(message = "起点类型不能为空")
-    private String fromType;
+    @NotBlank(message = "关系类型code不能为空")
+    private String relationshipCode;
     
-    @NotBlank(message = "终点类型不能为空")
-    private String toType;
+    @NotBlank(message = "起点id不能为空")
+    private String fromId;
     
-    private String description;
+    @NotBlank(message = "终点id不能为空")
+    private String toId;
     
 }

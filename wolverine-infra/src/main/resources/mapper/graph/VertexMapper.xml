@@ -1,0 +1,12 @@
+<mapper namespace="com.wt.test.wolverine.infra.graph.dao.VertexMapper">
+    <insert id="createVertex">
+        INSERT VERTEX ${ vertex.tagName } (ctime)
+        VALUES '${ vertex.id }' : (${ vertex.createTime })
+    </insert>
+
+    <select id="getVertex" resultType="com.wt.test.wolverine.infra.graph.model.VertexDO">
+        MATCH (v)
+        WHERE id(v) == '${ vid }'
+        RETURN id(v) as id, tags(v)[0] as tagName , properties(v).ctime as createTime
+    </select>
+</mapper>

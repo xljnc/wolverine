@@ -1,6 +1,6 @@
 <mapper namespace="com.wt.test.wolverine.infra.graph.dao.TagMapper">
     <insert id="createTag">
-        CREATE TAG IF NOT EXISTS ${ name } () comment = '${ description }'
+        CREATE TAG IF NOT EXISTS ${ name } (ctime TIMESTAMP not null default  timestamp()) comment = '${ description }'
     </insert>
 
     <delete id="deleteTag">

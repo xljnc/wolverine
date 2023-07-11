@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * BusinessCacheDao
  *
@@ -32,6 +34,19 @@ public class BusinessCacheDao {
         String businessRedisKey = createBusinessRedisKey(businessInfo.getType());
         String businessStr = jsonUtil.writeValueAsString(businessInfo);
         redisUtil.setString(businessRedisKey, businessStr);
+    }
+    
+    /**
+     * 缓存 业务类型
+     *
+     * @param businessInfo 业务类型
+     * @param duration     缓存时间
+     * @param timeUnit     TimeUnit
+     */
+    public void cacheBusiness(BusinessInfo businessInfo, Long duration, TimeUnit timeUnit) {
+        String businessRedisKey = createBusinessRedisKey(businessInfo.getType());
+        String businessStr = jsonUtil.writeValueAsString(businessInfo);
+        redisUtil.setString(businessRedisKey, businessStr, duration, timeUnit);
     }
     
     /**

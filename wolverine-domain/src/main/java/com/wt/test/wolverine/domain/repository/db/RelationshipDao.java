@@ -10,8 +10,6 @@ import com.wt.test.wolverine.infra.db.model.RelationshipDO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.Objects;
-
 /**
  * RelationshipDao
  *
@@ -46,11 +44,7 @@ public class RelationshipDao {
         LambdaQueryWrapper<RelationshipDO> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(RelationshipDO::getCode, relationshipCode);
         RelationshipDO relationshipDO = relationshipMapper.selectOne(queryWrapper);
-        RelationshipInfo relationshipInfo = null;
-        if (Objects.nonNull(relationshipDO)) {
-            relationshipInfo = EntityConverter.INSTANCE.toRelationshipInfo(relationshipDO);
-        }
-        return relationshipInfo;
+        return EntityConverter.INSTANCE.toRelationshipInfo(relationshipDO);
     }
     
     /**

@@ -10,8 +10,6 @@ import com.wt.test.wolverine.infra.db.model.BusinessDO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.Objects;
-
 /**
  * BusinessDao
  *
@@ -46,11 +44,7 @@ public class BusinessDao {
         LambdaQueryWrapper<BusinessDO> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(BusinessDO::getType, businessType);
         BusinessDO businessDO = businessMapper.selectOne(queryWrapper);
-        BusinessInfo businessInfo = null;
-        if (Objects.nonNull(businessDO)) {
-            businessInfo = EntityConverter.INSTANCE.toBusinessInfo(businessDO);
-        }
-        return businessInfo;
+        return EntityConverter.INSTANCE.toBusinessInfo(businessDO);
     }
     
     /**

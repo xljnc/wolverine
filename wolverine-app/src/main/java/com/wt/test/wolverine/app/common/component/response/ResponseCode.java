@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public enum ResponseCode {
     BUSINESS_NOT_EXIST(1000, "业务类型不存在"),
-    
+    RELATIONSHIP_NOT_EXIST(2000, "关系类型不存在"),
     ;
     
     private final Integer code;
