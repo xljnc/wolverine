@@ -3,7 +3,7 @@ package com.wt.test.wolverine.infra.graph.dao;
 import org.springframework.data.repository.query.Param;
 
 /**
- * 创建 图数据库 tag
+ *  图数据库 tag mapper
  *
  * @author qiyu
  * @since 2023/7/6

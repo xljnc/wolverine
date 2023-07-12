@@ -4,6 +4,7 @@ import com.wt.test.wolverine.app.common.component.exception.BizException;
 import com.wt.test.wolverine.app.common.component.response.ResponseCode;
 import com.wt.test.wolverine.app.dto.RelationDTO;
 import com.wt.test.wolverine.app.util.VertexUtil;
+import com.wt.test.wolverine.domain.entity.RelationInfo;
 import com.wt.test.wolverine.domain.entity.RelationshipInfo;
 import com.wt.test.wolverine.domain.entity.VertexInfo;
 import com.wt.test.wolverine.domain.service.RelationService;
@@ -58,7 +59,12 @@ public class RelationManager {
                     .build();
             vertexService.createVertex(toVertex);
         }
-        //
+        //创建关系
+        RelationInfo relationInfo = RelationInfo.builder()
+                .relationshipCode(relationDTO.getRelationshipCode())
+                .fromId(fromVertexId).toId(toVertexId)
+                .build();
+        relationService.createRelation(relationInfo);
     }
     
 }

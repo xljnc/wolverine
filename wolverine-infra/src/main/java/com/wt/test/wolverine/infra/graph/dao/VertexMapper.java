@@ -4,7 +4,7 @@ import com.wt.test.wolverine.infra.graph.model.VertexDO;
 import org.springframework.data.repository.query.Param;
 
 /**
- * 节点mapper
+ * 图数据库 节点 mapper
  *
  * @author qiyu
  * @since 2023/7/7

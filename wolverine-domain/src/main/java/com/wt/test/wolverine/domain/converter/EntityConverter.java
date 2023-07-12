@@ -1,10 +1,12 @@
 package com.wt.test.wolverine.domain.converter;
 
 import com.wt.test.wolverine.domain.entity.BusinessInfo;
+import com.wt.test.wolverine.domain.entity.RelationInfo;
 import com.wt.test.wolverine.domain.entity.RelationshipInfo;
 import com.wt.test.wolverine.domain.entity.VertexInfo;
 import com.wt.test.wolverine.infra.db.model.BusinessDO;
 import com.wt.test.wolverine.infra.db.model.RelationshipDO;
+import com.wt.test.wolverine.infra.graph.model.EdgeDO;
 import com.wt.test.wolverine.infra.graph.model.VertexDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -70,4 +72,14 @@ public interface EntityConverter {
      */
     @Mapping(target = "createTime", expression = "java(vertexInfo.getCreateTime() / 1000L)")
     VertexDO toVertexDO(VertexInfo vertexInfo);
+    
+    /**
+     * RelationInfo 转 EdgeDO
+     *
+     * @param relationInfo RelationInfo
+     * @return EdgeDO
+     */
+    @Mapping(target = "type", source = "relationshipCode")
+    @Mapping(target = "createTime", expression = "java(relationInfo.getCreateTime() / 1000L)")
+    EdgeDO toEdgeDO(RelationInfo relationInfo);
 }

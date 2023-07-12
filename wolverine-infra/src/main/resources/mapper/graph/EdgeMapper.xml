@@ -1,0 +1,10 @@
+<mapper namespace="com.wt.test.wolverine.infra.graph.dao.EdgeMapper">
+    <insert id="createEdge">
+        INSERT EDGE IF NOT EXISTS ${ edge.type } (ctime)
+        VALUES '${ edge.fromId }' -> '${ edge.toId }' : (${ edge.createTime })
+    </insert>
+
+    <delete id="deleteEdge">
+        DELETE EDGE ${ edge.type } '${ edge.fromId }' -> '${ edge.toId }
+    </delete>
+</mapper>
