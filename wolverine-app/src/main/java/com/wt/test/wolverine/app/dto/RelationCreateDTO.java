@@ -16,7 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RelationDTO implements Serializable {
+public class RelationCreateDTO implements Serializable {
     
     @Serial
     private static final long serialVersionUID = 7198501431104661998L;

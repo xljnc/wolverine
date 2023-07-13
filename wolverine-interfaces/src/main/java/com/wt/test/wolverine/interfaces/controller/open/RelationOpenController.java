@@ -1,10 +1,12 @@
 package com.wt.test.wolverine.interfaces.controller.open;
 
 import com.wt.test.wolverine.app.common.component.response.BaseResponse;
-import com.wt.test.wolverine.app.dto.RelationDTO;
+import com.wt.test.wolverine.app.dto.RelationCreateDTO;
 import com.wt.test.wolverine.app.manager.RelationManager;
+import com.wt.test.wolverine.app.vo.RelationVO;
 import com.wt.test.wolverine.interfaces.converter.CommandConverter;
 import com.wt.test.wolverine.interfaces.dto.req.RelationCreateCommand;
+import com.wt.test.wolverine.interfaces.dto.req.RelationExistsQuery;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,8 +29,15 @@ public class RelationOpenController {
     
     @PostMapping("/v1/create")
     public BaseResponse<Boolean> createRelation(@RequestBody @Valid RelationCreateCommand createCommand) {
-        RelationDTO relationDTO = CommandConverter.INSTANCE.toRelationDTO(createCommand);
-        relationManager.createRelation(relationDTO);
+        RelationCreateDTO createDTO = CommandConverter.INSTANCE.toRelationDTO(createCommand);
+        relationManager.createRelation(createDTO);
         return BaseResponse.success(Boolean.TRUE);
+    }
+    
+    @PostMapping("/v1/exists")
+    public BaseResponse<RelationVO> existsRelation(@RequestBody @Valid RelationExistsQuery existsQuery) {
+        RelationVO relationVO = relationManager.existsRelation(existsQuery.getRelationshipCode(),
+                existsQuery.getVertexA(), existsQuery.getVertexB());
+        return BaseResponse.success(relationVO);
     }
 }

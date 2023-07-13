@@ -1,7 +1,7 @@
 package com.wt.test.wolverine.interfaces.converter;
 
 import com.wt.test.wolverine.app.dto.BusinessDTO;
-import com.wt.test.wolverine.app.dto.RelationDTO;
+import com.wt.test.wolverine.app.dto.RelationCreateDTO;
 import com.wt.test.wolverine.app.dto.RelationshipDTO;
 import com.wt.test.wolverine.interfaces.dto.req.BusinessCreateCommand;
 import com.wt.test.wolverine.interfaces.dto.req.RelationCreateCommand;
@@ -37,10 +37,11 @@ public interface CommandConverter {
     RelationshipDTO toRelationshipDTO(RelationshipCreateCommand createCommand);
     
     /**
-     * RelationCreateCommand 转 RelationDTO
+     * RelationCreateCommand 转 RelationCreateDTO
      *
      * @param createCommand RelationCreateCommand
-     * @return RelationDTO
+     * @return RelationCreateDTO
      */
-    RelationDTO toRelationDTO(RelationCreateCommand createCommand);
+    RelationCreateDTO toRelationDTO(RelationCreateCommand createCommand);
+    
 }

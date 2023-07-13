@@ -2,6 +2,8 @@ package com.wt.test.wolverine.domain.service;
 
 import com.wt.test.wolverine.domain.entity.RelationInfo;
 
+import java.util.List;
+
 /**
  * 关系 service
  *
@@ -16,4 +18,14 @@ public interface RelationService {
      * @param relationInfo RelationInfo
      */
     void createRelation(RelationInfo relationInfo);
+    
+    /**
+     * 查询节点间是否存在关系
+     *
+     * @param relationshipCode 关系类型
+     * @param vertexAId        节点A
+     * @param vertexBId        节点B
+     * @return List<RelationInfo> 关系列表
+     */
+    List<RelationInfo> existsRelation(String relationshipCode, String vertexAId, String vertexBId);
 }

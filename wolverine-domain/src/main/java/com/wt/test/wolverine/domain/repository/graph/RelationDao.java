@@ -7,6 +7,8 @@ import com.wt.test.wolverine.infra.graph.model.EdgeDO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * 关系 repository
  *
@@ -37,5 +39,25 @@ public class RelationDao {
     public void deleteRelation(RelationInfo relationInfo) {
         EdgeDO edgeDO = EntityConverter.INSTANCE.toEdgeDO(relationInfo);
         edgeMapper.deleteEdge(edgeDO);
+    }
+    
+    /**
+     * 查询2个节点之间的关系
+     * 双向查询
+     *
+     * @param type        关系类型
+     * @param vertexAType 节点A类型
+     * @param vertexAId   节点A ID
+     * @param vertexBType 节点B类型
+     * @param vertexBId   节点B ID
+     * @return List<RelationInfo> 关系列表
+     */
+    List<RelationInfo> queryEdgeBidirection(String type,
+                                            String vertexAType,
+                                            String vertexAId,
+                                            String vertexBType,
+                                            String vertexBId) {
+//        edgeMapper.queryEdgeBidirection(type,vertexAType)
+        return null;
     }
 }

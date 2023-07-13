@@ -43,12 +43,9 @@ public class RelationshipManager {
         businessExist(fromBusiness, relationshipDTO.getFromType());
         BusinessInfo toBusiness = businessService.getBusiness(relationshipDTO.getToType());
         businessExist(toBusiness, relationshipDTO.getToType());
-//      code = from_to
-        String relationshipCode = relationshipDTO.getFromType() + "_" + relationshipDTO.getToType();
-        relationshipDTO.setCode(relationshipCode);
         RelationshipInfo relationshipInfo = DtoConverter.INSTANCE.toRelationshipDbInfo(relationshipDTO);
         relationshipService.createRelationship(relationshipInfo);
-        return relationshipCode;
+        return relationshipDTO.getCode();
     }
     
     /**

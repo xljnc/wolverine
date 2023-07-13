@@ -9,6 +9,7 @@ import com.wt.test.wolverine.infra.lock.util.LockUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -40,5 +41,18 @@ public class RelationServiceImpl implements RelationService {
         relationDao.createRelation(relationInfo);
         //清除缓存，防止缓存了假的关系
         relationCacheDao.deleteRelation(relationInfo);
+    }
+    
+    /**
+     * 查询节点间是否存在关系
+     *
+     * @param relationshipCode 关系类型
+     * @param vertexAId        节点A
+     * @param vertexBId        节点B
+     * @return List<RelationInfo> 关系列表
+     */
+    @Override
+    public List<RelationInfo> existsRelation(String relationshipCode, String vertexAId, String vertexBId) {
+        return null;
     }
 }
