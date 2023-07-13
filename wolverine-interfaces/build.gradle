@@ -23,8 +23,10 @@ test {
     useJUnitPlatform()
 }
 
-compileJava{
-    options.compilerArgs <<"-Amapstruct.unmappedTargetPolicy=IGNORE"
+compileJava {
+    options.compilerArgs = [
+            "-Amapstruct.unmappedTargetPolicy=IGNORE"
+    ]
 }
 
 description = 'wolverine-interfaces'

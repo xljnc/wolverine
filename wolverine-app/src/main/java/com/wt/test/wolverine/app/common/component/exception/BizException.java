@@ -1,6 +1,7 @@
 package com.wt.test.wolverine.app.common.component.exception;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 
@@ -9,6 +10,7 @@ import java.io.Serial;
  * @since 2023/7/3
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class BizException extends RuntimeException {
     
     @Serial
