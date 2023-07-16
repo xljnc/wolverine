@@ -8,6 +8,15 @@
         DELETE EDGE ${ edge.type } '${ edge.fromVertexId }' -> '${ edge.toVertexId }
     </delete>
 
+    <select id="getEdge" resultType="com.wt.test.wolverine.infra.graph.model.EdgeDO">
+        MATCH (v1)-[e :${ edgeType }]->(v2)
+        WHERE id(v1) == '${ fromVertexId }' and id(v2) == '${ toVertexId }'
+        RETURN type(e) as type ,
+        id(v1) as fromVertexId, tags(v1)[0] as fromType ,
+        id(v2) as toVertexId, tags(v1)[0] as toType ,
+        properties(e).ctime as createTime
+    </select>
+
     <select id="queryEdgeBidirection" resultType="com.wt.test.wolverine.infra.graph.model.EdgeDO">
         MATCH (v1)-[e ${ edgeTypes }]-(v2)
         WHERE id(v1) == '${ vertexAId }' and id(v2) == '${ vertexBId }'

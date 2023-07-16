@@ -33,6 +33,19 @@ public class RelationDao {
     }
     
     /**
+     * 获取关系
+     *
+     * @param relationshipCode 关系类型code
+     * @param fromVertexId     起点id
+     * @param toVertexId       终点id
+     * @return 关系
+     */
+    public RelationInfo getRelation(String relationshipCode, String fromVertexId, String toVertexId) {
+        EdgeDO edgeDO = edgeMapper.getEdge(relationshipCode, fromVertexId, toVertexId);
+        return EntityConverter.INSTANCE.toRelation(edgeDO);
+    }
+    
+    /**
      * 删除关系
      *
      * @param relationInfo 关系

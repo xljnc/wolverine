@@ -1,6 +1,7 @@
 package com.wt.test.wolverine.domain.service.impl;
 
 import cn.hutool.core.date.DateUtil;
+import com.wt.test.wolverine.domain.common.CommonConstants;
 import com.wt.test.wolverine.domain.entity.RelationInfo;
 import com.wt.test.wolverine.domain.repository.cache.RelationCacheDao;
 import com.wt.test.wolverine.domain.repository.graph.RelationDao;
@@ -9,8 +10,10 @@ import com.wt.test.wolverine.infra.lock.util.LockUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 业务 service
@@ -21,6 +24,9 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class RelationServiceImpl implements RelationService {
+    
+    private static final String RELATION_LOCK_NAME = "lock::relation::%s::%s::%s";
+    
     
     private final RelationDao relationDao;
     
@@ -44,16 +50,67 @@ public class RelationServiceImpl implements RelationService {
     }
     
     /**
-     * 查询节点间是否存在关系
+     * 获取关系
      *
-     * @param relationshipCode 关系类型
-     * @param vertexAId        节点A
-     * @param vertexBId        节点B
-     * @return List<RelationInfo> 关系列表
+     * @param relationshipCode 关系类型code
+     * @param fromVertexId     起点id
+     * @param toVertexId       终点id
+     * @return 关系
      */
     @Override
-    public List<RelationInfo> existsRelation(String relationshipCode, String vertexAId, String vertexBId) {
-        return null;
+    public RelationInfo getRelation(String relationshipCode, String fromVertexId, String toVertexId) {
+        RelationInfo relationInfo = relationCacheDao.getRelation(relationshipCode, fromVertexId, toVertexId);
+        if (Objects.isNull(relationInfo)) {
+            String lockName = String.format(RELATION_LOCK_NAME, relationshipCode, fromVertexId, toVertexId);
+            List<String> args = Arrays.asList(relationshipCode, fromVertexId, toVertexId);
+            relationInfo = lockUtil.lockAndExecute(lockName, this::getRelationWithLock, args);
+        }
+        if (isFakeRelation(relationInfo)) {
+            relationInfo = null;
+        }
+        return relationInfo;
+    }
+    
+    /**
+     * 查询关系, 需要加锁
+     *
+     * @param args 参数, arg[0]:relationshipCode, arg[1]:fromVertexId, arg[2]:toVertexId
+     */
+    private RelationInfo getRelationWithLock(List<String> args) {
+        String relationshipCode = args.get(0);
+        String fromVertexId = args.get(1);
+        String toVertexId = args.get(2);
+        RelationInfo relationInfo = relationCacheDao.getRelation(relationshipCode, fromVertexId, toVertexId);
+        if (Objects.isNull(relationInfo)) {
+            relationInfo = relationDao.getRelation(relationshipCode, fromVertexId, toVertexId);
+            if (Objects.isNull(relationInfo)) {
+                //缓存假的业务类型，防穿透
+                relationInfo = createFakeRelation();
+                relationCacheDao.cacheRelation(relationInfo, CommonConstants.FAKE_CACHE_TIME, CommonConstants.FAKE_CACHE_TIME_UNIT);
+            } else {
+                relationCacheDao.cacheRelation(relationInfo);
+            }
+        }
+        return relationInfo;
+    }
+    
+    /**
+     * 创建 假的关系
+     *
+     * @return RelationInfo 假的关系
+     */
+    private static RelationInfo createFakeRelation() {
+        return RelationInfo.builder().build();
+    }
+   
+    /**
+     * 判断是否假的 关系
+     *
+     * @param relationInfo 关系
+     * @return 是否假的 关系
+     */
+    private static boolean isFakeRelation(RelationInfo relationInfo) {
+        return Optional.ofNullable(relationInfo).map(RelationInfo::getRelationshipCode).isEmpty();
     }
     
     /**

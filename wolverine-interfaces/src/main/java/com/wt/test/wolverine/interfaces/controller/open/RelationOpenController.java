@@ -3,12 +3,13 @@ package com.wt.test.wolverine.interfaces.controller.open;
 import com.wt.test.wolverine.app.common.component.response.BaseResponse;
 import com.wt.test.wolverine.app.dto.RelationBidirectionDTO;
 import com.wt.test.wolverine.app.dto.RelationCreateDTO;
+import com.wt.test.wolverine.app.dto.RelationDTO;
 import com.wt.test.wolverine.app.manager.RelationManager;
 import com.wt.test.wolverine.app.vo.RelationVO;
 import com.wt.test.wolverine.interfaces.converter.CommandConverter;
 import com.wt.test.wolverine.interfaces.dto.req.RelationBidirectionQuery;
 import com.wt.test.wolverine.interfaces.dto.req.RelationCreateCommand;
-import com.wt.test.wolverine.interfaces.dto.req.RelationExistsQuery;
+import com.wt.test.wolverine.interfaces.dto.req.RelationQuery;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,10 +37,14 @@ public class RelationOpenController {
         return BaseResponse.success(Boolean.TRUE);
     }
     
-    @PostMapping("/v1/exists")
-    public BaseResponse<RelationVO> existsRelation(@RequestBody @Valid RelationExistsQuery existsQuery) {
-        RelationVO relationVO = relationManager.existsRelation(existsQuery.getRelationshipCode(), existsQuery.getVertexA(), existsQuery.getVertexB());
-        return BaseResponse.success(relationVO);
+    /**
+     * 获取关系
+     */
+    @PostMapping("/v1/get")
+    public BaseResponse<RelationDTO> existsRelation(@RequestBody @Valid RelationQuery relationQuery) {
+        RelationDTO relationDTO = relationManager.getRelation(relationQuery.getRelationshipCode(),
+                relationQuery.getFromId(), relationQuery.getToId());
+        return BaseResponse.success(relationDTO);
     }
     
     /**

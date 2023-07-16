@@ -10,7 +10,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 关系是否存在 query
+ * 关系查询 query
  *
  * @author qiyu
  * @since 2023/7/13
@@ -19,7 +19,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RelationExistsQuery implements Serializable {
+public class RelationQuery implements Serializable {
     
     @Serial
     private static final long serialVersionUID = -5918236162149992717L;
@@ -27,10 +27,10 @@ public class RelationExistsQuery implements Serializable {
     @NotBlank(message = "关系类型code不能为空")
     private String relationshipCode;
     
-    @NotBlank(message = "节点A不能为空")
-    private String vertexA;
+    @NotBlank(message = "起点业务id不能为空")
+    private String fromId;
     
-    @NotBlank(message = "节点B不能为空")
-    private String vertexB;
+    @NotBlank(message = "终点业务id不能为空")
+    private String toId;
     
 }

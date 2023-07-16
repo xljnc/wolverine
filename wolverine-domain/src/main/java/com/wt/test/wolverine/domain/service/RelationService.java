@@ -20,14 +20,14 @@ public interface RelationService {
     void createRelation(RelationInfo relationInfo);
     
     /**
-     * 查询节点间是否存在关系
+     * 获取关系
      *
-     * @param relationshipCode 关系类型
-     * @param vertexAId        节点A
-     * @param vertexBId        节点B
-     * @return List<RelationInfo> 关系列表
+     * @param relationshipCode 关系类型code
+     * @param fromVertexId     起点id
+     * @param toVertexId       终点id
+     * @return 关系
      */
-    List<RelationInfo> existsRelation(String relationshipCode, String vertexAId, String vertexBId);
+    RelationInfo getRelation(String relationshipCode, String fromVertexId, String toVertexId);
     
     /**
      * 获取节点间的双向关系

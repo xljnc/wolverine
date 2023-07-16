@@ -5,6 +5,7 @@ import com.wt.test.wolverine.app.common.component.response.ResponseCode;
 import com.wt.test.wolverine.app.converter.DtoConverter;
 import com.wt.test.wolverine.app.dto.RelationBidirectionDTO;
 import com.wt.test.wolverine.app.dto.RelationCreateDTO;
+import com.wt.test.wolverine.app.dto.RelationDTO;
 import com.wt.test.wolverine.app.util.BusinessUtil;
 import com.wt.test.wolverine.app.util.VertexUtil;
 import com.wt.test.wolverine.app.vo.RelationVO;
@@ -65,27 +66,26 @@ public class RelationManager {
             vertexService.createVertex(toVertex);
         }
         //创建关系
-        RelationInfo relationInfo = RelationInfo.builder().relationshipCode(createDTO.getRelationshipCode())
-                .fromVertexId(fromVertexId).toVertexId(toVertexId).build();
+        RelationInfo relationInfo = RelationInfo.builder().relationshipCode(createDTO.getRelationshipCode()).fromVertexId(fromVertexId).toVertexId(toVertexId).build();
         relationService.createRelation(relationInfo);
     }
     
     /**
      * 查询节点间是否存在关系
      *
-     * @param existsDTO 查询对象
-     * @return List<RelationInfo> 关系列表
+     * @param relationshipCode 关系类型code
+     * @param fromId           起点业务id
+     * @param toId             终点业务id
+     * @return 节点间是否存在关系
      */
-    public RelationVO existsRelation(String relationshipCode, String vertexA, String vertexB) {
+    public RelationDTO getRelation(String relationshipCode, String fromId, String toId) {
         //先查询关系类型是否存在
         RelationshipInfo relationshipInfo = getRelationship(relationshipCode);
         //重新组装节点id
-        String vertexAId = VertexUtil.createVertexId(relationshipInfo.getFromType(), vertexA);
-        String vertexBId = VertexUtil.createVertexId(relationshipInfo.getToType(), vertexB);
-        List<RelationInfo> relationInfoList = relationService.existsRelation(relationshipCode, vertexAId, vertexBId);
-        return RelationVO.builder()
-                .relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList))
-                .build();
+        String fromVertexId = VertexUtil.createVertexId(relationshipInfo.getFromType(), fromId);
+        String toVertexId = VertexUtil.createVertexId(relationshipInfo.getToType(), toId);
+        RelationInfo relationInfo = relationService.getRelation(relationshipCode, fromVertexId, toVertexId);
+        return DtoConverter.INSTANCE.toRelationDTO(relationInfo);
     }
     
     /**
@@ -102,11 +102,8 @@ public class RelationManager {
         BusinessUtil.businessExist(bizBBusiness, bidirectionDTO.getBizTypeB());
         String vertexAId = VertexUtil.createVertexId(bidirectionDTO.getBizTypeA(), bidirectionDTO.getBizIdA());
         String vertexBId = VertexUtil.createVertexId(bidirectionDTO.getBizTypeB(), bidirectionDTO.getBizIdB());
-        List<RelationInfo> relationInfoList = relationService.relationBidirection(vertexAId, vertexBId,
-                bidirectionDTO.getRelationshipCodes());
-        return RelationVO.builder()
-                .relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList))
-                .build();
+        List<RelationInfo> relationInfoList = relationService.relationBidirection(vertexAId, vertexBId, bidirectionDTO.getRelationshipCodes());
+        return RelationVO.builder().relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList)).build();
     }
     
     /**

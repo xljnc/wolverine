@@ -28,6 +28,18 @@ public interface EdgeMapper {
     void deleteEdge(@Param("edge") EdgeDO edgeDO);
     
     /**
+     * 获取关系
+     *
+     * @param edgeType     关系类型
+     * @param fromVertexId 起点id
+     * @param toVertexId   终点id
+     * @return 关系
+     */
+    EdgeDO getEdge(@Param("edgeType")String edgeType,
+                   @Param("fromVertexId")String fromVertexId,
+                   @Param("toVertexId")String toVertexId);
+    
+    /**
      * 查询2个节点之间的关系
      * 双向查询
      *
