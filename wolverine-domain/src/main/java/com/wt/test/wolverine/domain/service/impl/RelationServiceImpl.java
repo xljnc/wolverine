@@ -55,4 +55,19 @@ public class RelationServiceImpl implements RelationService {
     public List<RelationInfo> existsRelation(String relationshipCode, String vertexAId, String vertexBId) {
         return null;
     }
+    
+    /**
+     * 获取节点间的双向关系
+     *
+     * @param vertexAId         节点A
+     * @param vertexBId         节点B
+     * @param relationshipCodes 关系类型列表
+     * @return List<RelationInfo> 关系列表
+     */
+    @Override
+    public List<RelationInfo> relationBidirection(String vertexAId,
+                                                  String vertexBId,
+                                                  List<String> relationshipCodes) {
+        return relationDao.queryEdgeBidirection(vertexAId, vertexBId, relationshipCodes);
+    }
 }

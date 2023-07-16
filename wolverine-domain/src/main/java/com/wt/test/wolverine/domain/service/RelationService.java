@@ -28,4 +28,16 @@ public interface RelationService {
      * @return List<RelationInfo> 关系列表
      */
     List<RelationInfo> existsRelation(String relationshipCode, String vertexAId, String vertexBId);
+    
+    /**
+     * 获取节点间的双向关系
+     *
+     * @param vertexAId         节点A
+     * @param vertexBId         节点B
+     * @param relationshipCodes 关系类型列表
+     * @return List<RelationInfo> 关系列表
+     */
+    List<RelationInfo> relationBidirection(String vertexAId,
+                                           String vertexBId,
+                                           List<String> relationshipCodes);
 }

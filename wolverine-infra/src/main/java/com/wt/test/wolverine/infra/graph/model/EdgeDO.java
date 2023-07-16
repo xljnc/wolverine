@@ -38,7 +38,7 @@ public class EdgeDO implements Serializable {
     /**
      * 起点id
      */
-    private String fromId;
+    private String fromVertexId;
     
     /**
      * 终点类型
@@ -48,7 +48,7 @@ public class EdgeDO implements Serializable {
     /**
      * 终点id
      */
-    private String toId;
+    private String toVertexId;
     
     /**
      * 创建时间

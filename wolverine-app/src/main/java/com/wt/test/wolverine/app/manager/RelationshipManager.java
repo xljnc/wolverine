@@ -1,9 +1,8 @@
 package com.wt.test.wolverine.app.manager;
 
-import com.wt.test.wolverine.app.common.component.exception.BizException;
-import com.wt.test.wolverine.app.common.component.response.ResponseCode;
 import com.wt.test.wolverine.app.converter.DtoConverter;
 import com.wt.test.wolverine.app.dto.RelationshipDTO;
+import com.wt.test.wolverine.app.util.BusinessUtil;
 import com.wt.test.wolverine.domain.entity.BusinessInfo;
 import com.wt.test.wolverine.domain.entity.RelationshipInfo;
 import com.wt.test.wolverine.domain.service.BusinessService;
@@ -40,9 +39,9 @@ public class RelationshipManager {
     public String createRelationship(RelationshipDTO relationshipDTO) {
         //需要先校验业务类型是否存在
         BusinessInfo fromBusiness = businessService.getBusiness(relationshipDTO.getFromType());
-        businessExist(fromBusiness, relationshipDTO.getFromType());
+        BusinessUtil.businessExist(fromBusiness, relationshipDTO.getFromType());
         BusinessInfo toBusiness = businessService.getBusiness(relationshipDTO.getToType());
-        businessExist(toBusiness, relationshipDTO.getToType());
+        BusinessUtil.businessExist(toBusiness, relationshipDTO.getToType());
         RelationshipInfo relationshipInfo = DtoConverter.INSTANCE.toRelationshipDbInfo(relationshipDTO);
         relationshipService.createRelationship(relationshipInfo);
         return relationshipDTO.getCode();
@@ -73,10 +72,4 @@ public class RelationshipManager {
         return relationshipService.deleteRelationship(relationshipCode);
     }
     
-    private static void businessExist(BusinessInfo businessInfo, String type) {
-        if (Objects.isNull(businessInfo)) {
-            log.error("业务类型{}不存在", type);
-            throw new BizException(ResponseCode.BUSINESS_NOT_EXIST.getCode(), ResponseCode.BUSINESS_NOT_EXIST.getMessage());
-        }
-    }
 }

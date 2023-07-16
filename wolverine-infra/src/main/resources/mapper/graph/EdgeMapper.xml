@@ -1,18 +1,19 @@
 <mapper namespace="com.wt.test.wolverine.infra.graph.dao.EdgeMapper">
     <insert id="createEdge">
         INSERT EDGE IF NOT EXISTS ${ edge.type } (ctime)
-        VALUES '${ edge.fromId }' -> '${ edge.toId }' : (${ edge.createTime })
+        VALUES '${ edge.fromVertexId }' -> '${ edge.toVertexId }' : (${ edge.createTime })
     </insert>
 
     <delete id="deleteEdge">
-        DELETE EDGE ${ edge.type } '${ edge.fromId }' -> '${ edge.toId }
+        DELETE EDGE ${ edge.type } '${ edge.fromVertexId }' -> '${ edge.toVertexId }
     </delete>
 
-    <select id="queryEdgeBidirection">
-        MATCH (v1:vertexAType)-[e:${ type }]-(v2:vertexBType)
+    <select id="queryEdgeBidirection" resultType="com.wt.test.wolverine.infra.graph.model.EdgeDO">
+        MATCH (v1)-[e ${ edgeTypes }]-(v2)
         WHERE id(v1) == '${ vertexAId }' and id(v2) == '${ vertexBId }'
-        RETURN id(v1) as fromId, tags(v1)[0] as fromType ,
-        id(v2) as toId, tags(v1)[0] as toType ,
+        RETURN type(e) as type ,
+        id(v1) as fromVertexId, tags(v1)[0] as fromType ,
+        id(v2) as toVertexId, tags(v1)[0] as toType ,
         properties(e).ctime as createTime
     </select>
 </mapper>

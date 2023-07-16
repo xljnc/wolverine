@@ -1,5 +1,6 @@
 package com.wt.test.wolverine.domain.repository.graph;
 
+import cn.hutool.core.collection.CollUtil;
 import com.wt.test.wolverine.domain.converter.EntityConverter;
 import com.wt.test.wolverine.domain.entity.RelationInfo;
 import com.wt.test.wolverine.infra.graph.dao.EdgeMapper;
@@ -45,19 +46,26 @@ public class RelationDao {
      * 查询2个节点之间的关系
      * 双向查询
      *
-     * @param type        关系类型
-     * @param vertexAType 节点A类型
-     * @param vertexAId   节点A ID
-     * @param vertexBType 节点B类型
-     * @param vertexBId   节点B ID
+     * @param vertexAId         节点A ID
+     * @param vertexBId         节点B ID
+     * @param relationshipCodes 关系类型列表
      * @return List<RelationInfo> 关系列表
      */
-    List<RelationInfo> queryEdgeBidirection(String type,
-                                            String vertexAType,
-                                            String vertexAId,
-                                            String vertexBType,
-                                            String vertexBId) {
-//        edgeMapper.queryEdgeBidirection(type,vertexAType)
-        return null;
+    public List<RelationInfo> queryEdgeBidirection(String vertexAId,
+                                                   String vertexBId,
+                                                   List<String> relationshipCodes) {
+        //如果关系类型
+        String relationshipList = "";
+        if (CollUtil.isNotEmpty(relationshipCodes)) {
+            relationshipList = relationListToString(relationshipCodes);
+        }
+        List<EdgeDO> edgeDOList = edgeMapper.queryEdgeBidirection(vertexAId, vertexBId, relationshipList);
+        return EntityConverter.INSTANCE.toRelationInfoList(edgeDOList);
+    }
+    
+    private static String relationListToString(List<String> relationshipCodes) {
+        StringBuilder sb = new StringBuilder();
+        relationshipCodes.forEach(code -> sb.append(":").append(code));
+        return sb.toString();
     }
 }

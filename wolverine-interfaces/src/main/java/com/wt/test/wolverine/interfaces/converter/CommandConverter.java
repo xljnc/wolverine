@@ -1,9 +1,11 @@
 package com.wt.test.wolverine.interfaces.converter;
 
 import com.wt.test.wolverine.app.dto.BusinessDTO;
+import com.wt.test.wolverine.app.dto.RelationBidirectionDTO;
 import com.wt.test.wolverine.app.dto.RelationCreateDTO;
 import com.wt.test.wolverine.app.dto.RelationshipDTO;
 import com.wt.test.wolverine.interfaces.dto.req.BusinessCreateCommand;
+import com.wt.test.wolverine.interfaces.dto.req.RelationBidirectionQuery;
 import com.wt.test.wolverine.interfaces.dto.req.RelationCreateCommand;
 import com.wt.test.wolverine.interfaces.dto.req.RelationshipCreateCommand;
 import org.mapstruct.Mapper;
@@ -43,5 +45,13 @@ public interface CommandConverter {
      * @return RelationCreateDTO
      */
     RelationCreateDTO toRelationDTO(RelationCreateCommand createCommand);
+    
+    /**
+     * RelationBidirectionQuery 转 RelationBidirectionDTO
+     *
+     * @param bidirectionQuery RelationBidirectionQuery
+     * @return RelationBidirectionDTO
+     */
+    RelationBidirectionDTO toRelationBidirectionDTO(RelationBidirectionQuery bidirectionQuery);
     
 }

@@ -1,4 +1,4 @@
-package com.wt.test.wolverine.domain.entity;
+package com.wt.test.wolverine.app.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,19 +9,17 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 关系 info
- *
  * @author qiyu
- * @since 2023/6/27
+ * @since 2023/7/16
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RelationInfo implements Serializable {
+public class RelationDTO implements Serializable {
     
     @Serial
-    private static final long serialVersionUID = 7198501431104661998L;
+    private static final long serialVersionUID = -6645097609240191925L;
     
     private Long id;
     
@@ -36,6 +34,11 @@ public class RelationInfo implements Serializable {
     private String fromType;
     
     /**
+     * 起点业务id
+     */
+    private String fromId;
+    
+    /**
      * 起点id
      */
     private String fromVertexId;
@@ -44,6 +47,11 @@ public class RelationInfo implements Serializable {
      * 终点类型
      */
     private String toType;
+    
+    /**
+     * 终点业务id
+     */
+    private String toId;
     
     /**
      * 终点id

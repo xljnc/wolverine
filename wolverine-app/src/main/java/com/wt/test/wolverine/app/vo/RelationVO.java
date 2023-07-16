@@ -1,6 +1,6 @@
 package com.wt.test.wolverine.app.vo;
 
-import com.wt.test.wolverine.domain.entity.RelationInfo;
+import com.wt.test.wolverine.app.dto.RelationDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,5 +28,5 @@ public class RelationVO implements Serializable {
     /**
      * 关系列表，有可能是双向的，也可能有多种
      */
-    private List<RelationInfo> relations;
+    private List<RelationDTO> relations;
 }

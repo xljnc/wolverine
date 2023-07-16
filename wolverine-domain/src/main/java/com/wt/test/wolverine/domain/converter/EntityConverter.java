@@ -12,6 +12,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 /**
  * entity 转换器
  *
@@ -82,4 +84,22 @@ public interface EntityConverter {
     @Mapping(target = "type", source = "relationshipCode")
     @Mapping(target = "createTime", expression = "java(relationInfo.getCreateTime() / 1000L)")
     EdgeDO toEdgeDO(RelationInfo relationInfo);
+    
+    /**
+     * List<EdgeDO> 转 List<RelationInfo>
+     *
+     * @param edgeDOList List<EdgeDO>
+     * @return java.util.List<com.wt.test.wolverine.domain.entity.RelationInfo>
+     */
+    @Mapping(target = "relationshipCode", source = "type")
+    @Mapping(target = "createTime", expression = "java(edgeDO.getCreateTime() * 1000L)")
+    RelationInfo toRelation(EdgeDO edgeDO);
+    
+    /**
+     * List<EdgeDO> 转 List<RelationInfo>
+     *
+     * @param edgeDOList List<EdgeDO>
+     * @return java.util.List<com.wt.test.wolverine.domain.entity.RelationInfo>
+     */
+    List<RelationInfo> toRelationInfoList(List<EdgeDO> edgeDOList);
 }

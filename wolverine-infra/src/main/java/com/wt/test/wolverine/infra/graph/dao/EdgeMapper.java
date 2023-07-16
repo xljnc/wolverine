@@ -31,16 +31,12 @@ public interface EdgeMapper {
      * 查询2个节点之间的关系
      * 双向查询
      *
-     * @param type        关系类型
-     * @param vertexAType 节点A类型
-     * @param vertexAId   节点A ID
-     * @param vertexBType 节点B类型
-     * @param vertexBId   节点B ID
+     * @param vertexAId 节点A ID
+     * @param vertexBId 节点B ID
+     * @param edgeTypes 关系类型列表
      * @return java.util.List<com.wt.test.wolverine.infra.graph.model.EdgeDO>
      */
-    List<EdgeDO> queryEdgeBidirection(@Param("type") String type,
-                                      @Param("vertexAType") String vertexAType,
-                                      @Param("vertexAId") String vertexAId,
-                                      @Param("vertexBType") String vertexBType,
-                                      @Param("vertexBId") String vertexBId);
+    List<EdgeDO> queryEdgeBidirection(@Param("vertexAId") String vertexAId,
+                                      @Param("vertexBId") String vertexBId,
+                                      @Param("edgeTypes") String edgeTypes);
 }

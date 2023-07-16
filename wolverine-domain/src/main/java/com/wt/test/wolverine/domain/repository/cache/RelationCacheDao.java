@@ -84,7 +84,7 @@ public class RelationCacheDao {
      * @return 关系 redis key
      */
     private static String createRelationRedisKey(RelationInfo relationInfo) {
-        return createRelationRedisKey(relationInfo.getRelationshipCode(), relationInfo.getFromId(), relationInfo.getToId());
+        return createRelationRedisKey(relationInfo.getRelationshipCode(), relationInfo.getFromVertexId(), relationInfo.getToVertexId());
     }
     
     /**
