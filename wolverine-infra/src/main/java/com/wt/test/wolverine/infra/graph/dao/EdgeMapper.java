@@ -35,9 +35,9 @@ public interface EdgeMapper {
      * @param toVertexId   终点id
      * @return 关系
      */
-    EdgeDO getEdge(@Param("edgeType")String edgeType,
-                   @Param("fromVertexId")String fromVertexId,
-                   @Param("toVertexId")String toVertexId);
+    EdgeDO getEdge(@Param("edgeType") String edgeType,
+                   @Param("fromVertexId") String fromVertexId,
+                   @Param("toVertexId") String toVertexId);
     
     /**
      * 查询2个节点之间的关系
@@ -51,4 +51,33 @@ public interface EdgeMapper {
     List<EdgeDO> queryEdgeBidirection(@Param("vertexAId") String vertexAId,
                                       @Param("vertexBId") String vertexBId,
                                       @Param("edgeTypes") String edgeTypes);
+    
+    /**
+     * 获取关系数量
+     *
+     * @param edgeType     关系类型
+     * @param fromVertexId 起点id
+     * @param toVertexId   终点id
+     * @return 关系数量
+     */
+    Long getEdgeCount(@Param("edgeType") String edgeType,
+                      @Param("fromVertexId") String fromVertexId,
+                      @Param("toVertexId") String toVertexId);
+    
+    /**
+     * 查询关系
+     *
+     * @param edgeType     关系类型
+     * @param fromVertexId 起点id
+     * @param toVertexId   终点id
+     * @param limit        数量
+     * @param offset       偏移量
+     * @return 关系
+     */
+    List<EdgeDO> queryEdge(@Param("edgeType") String edgeType,
+                           @Param("fromVertexId") String fromVertexId,
+                           @Param("toVertexId") String toVertexId,
+                           @Param("limit") Long limit,
+                           @Param("offset") Long offset);
+    
 }

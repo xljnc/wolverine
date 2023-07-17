@@ -81,4 +81,32 @@ public class RelationDao {
         relationshipCodes.forEach(code -> sb.append(":").append(code));
         return sb.toString();
     }
+    
+    /**
+     * 获取关系数量
+     *
+     * @param relationshipCode 关系类型code
+     * @param fromVertexId     起点id
+     * @param toVertexId       终点id
+     * @return 关系数量
+     */
+    public Long getRelationCount(String relationshipCode, String fromVertexId, String toVertexId) {
+        return edgeMapper.getEdgeCount(relationshipCode, fromVertexId, toVertexId);
+    }
+    
+    /**
+     * 获取关系数量
+     *
+     * @param relationshipCode 关系类型code
+     * @param fromVertexId     起点id
+     * @param toVertexId       终点id
+     * @param limit            数量
+     * @param offset           偏移量
+     * @return List<RelationInfo> 关系列表
+     */
+    public List<RelationInfo> queryRelation(String relationshipCode, String fromVertexId,
+                                            String toVertexId, Long limit, Long offset) {
+        List<EdgeDO> edgeDOList = edgeMapper.queryEdge(relationshipCode, fromVertexId, toVertexId, limit, offset);
+        return EntityConverter.INSTANCE.toRelationInfoList(edgeDOList);
+    }
 }

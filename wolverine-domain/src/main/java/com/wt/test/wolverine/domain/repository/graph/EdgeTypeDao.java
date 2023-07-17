@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class EdgeTypeDao {
     
+    private static final String EDGE_TYPE_CTIME_INDEX_NAME = "idx_%s_ctime";
+    
     private final EdgeTypeMapper edgeTypeMapper;
     
     /**
@@ -24,6 +26,9 @@ public class EdgeTypeDao {
      */
     public void createEdgeType(String name, String description) {
         edgeTypeMapper.createEdgeType(name, description);
+        //在ctime属性上创建索引
+        String indexName = String.format(EDGE_TYPE_CTIME_INDEX_NAME, name);
+        edgeTypeMapper.createEdgeTypeIndex(name, indexName);
     }
     
     /**

@@ -1,13 +1,16 @@
 package com.wt.test.wolverine.app.manager;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.wt.test.wolverine.app.common.component.exception.BizException;
 import com.wt.test.wolverine.app.common.component.response.ResponseCode;
 import com.wt.test.wolverine.app.converter.DtoConverter;
 import com.wt.test.wolverine.app.dto.RelationBidirectionDTO;
-import com.wt.test.wolverine.app.dto.RelationCreateDTO;
 import com.wt.test.wolverine.app.dto.RelationDTO;
+import com.wt.test.wolverine.app.dto.RelationManageDTO;
+import com.wt.test.wolverine.app.dto.RelationPageQueryDTO;
 import com.wt.test.wolverine.app.util.BusinessUtil;
 import com.wt.test.wolverine.app.util.VertexUtil;
+import com.wt.test.wolverine.app.vo.RelationPageVO;
 import com.wt.test.wolverine.app.vo.RelationVO;
 import com.wt.test.wolverine.domain.entity.BusinessInfo;
 import com.wt.test.wolverine.domain.entity.RelationInfo;
@@ -20,7 +23,6 @@ import com.wt.test.wolverine.domain.service.VertexService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -44,30 +46,46 @@ public class RelationManager {
     
     private final BusinessService businessService;
     
-    @Transactional(rollbackFor = Exception.class)
-    public void createRelation(RelationCreateDTO createDTO) {
+    /**
+     * 创建关系
+     *
+     * @param manageDTO 关系操作dto
+     */
+    public void createRelation(RelationManageDTO manageDTO) {
         //先查询关系类型是否存在
-        RelationshipInfo relationshipInfo = relationshipService.getRelationship(createDTO.getRelationshipCode());
-        if (Objects.isNull(relationshipInfo)) {
-            throw new BizException(ResponseCode.RELATIONSHIP_NOT_EXIST.getCode(), ResponseCode.RELATIONSHIP_NOT_EXIST.getMessage());
-        }
+        RelationshipInfo relationshipInfo = getRelationship(manageDTO.getRelationshipCode());
         //如果没有起始节点，先创建
-        String fromVertexId = VertexUtil.createVertexId(relationshipInfo.getFromType(), createDTO.getFromId());
+        String fromVertexId = VertexUtil.createVertexId(relationshipInfo.getFromType(), manageDTO.getFromId());
         VertexInfo fromVertex = vertexService.getVertex(fromVertexId);
         if (Objects.isNull(fromVertex)) {
             fromVertex = VertexInfo.builder().id(fromVertexId).tagName(relationshipInfo.getFromType()).build();
             vertexService.createVertex(fromVertex);
         }
         //如果没有结束节点，先创建
-        String toVertexId = VertexUtil.createVertexId(relationshipInfo.getToType(), createDTO.getToId());
+        String toVertexId = VertexUtil.createVertexId(relationshipInfo.getToType(), manageDTO.getToId());
         VertexInfo toVertex = vertexService.getVertex(toVertexId);
         if (Objects.isNull(toVertex)) {
             toVertex = VertexInfo.builder().id(toVertexId).tagName(relationshipInfo.getToType()).build();
             vertexService.createVertex(toVertex);
         }
         //创建关系
-        RelationInfo relationInfo = RelationInfo.builder().relationshipCode(createDTO.getRelationshipCode()).fromVertexId(fromVertexId).toVertexId(toVertexId).build();
+        RelationInfo relationInfo = RelationInfo.builder().relationshipCode(manageDTO.getRelationshipCode()).fromVertexId(fromVertexId).toVertexId(toVertexId).build();
         relationService.createRelation(relationInfo);
+    }
+    
+    /**
+     * 取消关系
+     *
+     * @param manageDTO 关系操作dto
+     */
+    public void cancelRelation(RelationManageDTO manageDTO) {
+        //先查询关系类型是否存在
+        RelationshipInfo relationshipInfo = getRelationship(manageDTO.getRelationshipCode());
+        String fromVertexId = VertexUtil.createVertexId(relationshipInfo.getFromType(), manageDTO.getFromId());
+        String toVertexId = VertexUtil.createVertexId(relationshipInfo.getToType(), manageDTO.getToId());
+        //创建关系
+        RelationInfo relationInfo = RelationInfo.builder().relationshipCode(manageDTO.getRelationshipCode()).fromVertexId(fromVertexId).toVertexId(toVertexId).build();
+        relationService.deleteRelation(relationInfo);
     }
     
     /**
@@ -118,5 +136,32 @@ public class RelationManager {
             throw new BizException(ResponseCode.RELATIONSHIP_NOT_EXIST.getCode(), ResponseCode.RELATIONSHIP_NOT_EXIST.getMessage());
         }
         return relationshipInfo;
+    }
+    
+    public RelationPageVO pageRelation(RelationPageQueryDTO pageQueryDTO) {
+        //先查询关系类型是否存在
+        RelationshipInfo relationshipInfo = getRelationship(pageQueryDTO.getRelationshipCode());
+        String fromVertexId = null;
+        String toVertexId = null;
+        if (StringUtils.isNotBlank(pageQueryDTO.getFromId())) {
+            fromVertexId = VertexUtil.createVertexId(relationshipInfo.getFromType(), pageQueryDTO.getFromId());
+        }
+        if (StringUtils.isNotBlank(pageQueryDTO.getToId())) {
+            toVertexId = VertexUtil.createVertexId(relationshipInfo.getFromType(), pageQueryDTO.getToId());
+        }
+        //获取关系分页总量
+        Long count = relationService.getRelationCount(pageQueryDTO.getRelationshipCode(), fromVertexId, toVertexId);
+        if (Objects.equals(count,0L)){
+            return RelationPageVO.createEmptyVo(pageQueryDTO.getPageId(), pageQueryDTO.getPageSize());
+        }
+        //获取关系当前页
+        List<RelationInfo> relationInfoList =  relationService.queryRelation(pageQueryDTO.getRelationshipCode(),
+                fromVertexId, toVertexId, pageQueryDTO.getPageId(),pageQueryDTO.getPageSize());
+        return RelationPageVO.builder().relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList))
+                .count(count)
+                .pageId(pageQueryDTO.getPageId())
+                .pageSize(pageQueryDTO.getPageSize())
+                .build();
+        
     }
 }

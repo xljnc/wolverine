@@ -9,30 +9,28 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
+ * 关系分页查询 dto
+ *
  * @author qiyu
- * @since 2023/6/27
+ * @since 2023/7/13
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RelationCreateDTO implements Serializable {
+public class RelationPageQueryDTO implements Serializable {
     
     @Serial
-    private static final long serialVersionUID = 7198501431104661998L;
+    private static final long serialVersionUID = -5918236162149992717L;
     
-    /**
-     * 关系类型code
-     */
     private String relationshipCode;
     
-    /**
-     * 起点id不能为空
-     */
+    private Integer pageId;
+    
+    private Integer pageSize;
+    
     private String fromId;
     
-    /**
-     * 终点id不能为空
-     */
     private String toId;
+    
 }

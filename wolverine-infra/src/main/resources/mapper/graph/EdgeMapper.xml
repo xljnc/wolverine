@@ -25,4 +25,33 @@
         id(v2) as toVertexId, tags(v1)[0] as toType ,
         properties(e).ctime as createTime
     </select>
+
+    <select id="getEdgeCount">
+        MATCH (v1)-[e :${ edgeType }]->(v2)
+        WHERE 1 == 1
+        @if ( isNotEmpty( '${ fromVertexId }' ) ) {
+        and id(v1) == '${ fromVertexId }'
+        @}
+        @if ( isNotEmpty( '${ toVertexId }' ) ) {
+        and id(v2) == '${ toVertexId }'
+        @}
+        RETURN count(e)
+    </select>
+
+    <select id="queryEdge" resultType="com.wt.test.wolverine.infra.graph.model.EdgeDO">
+        MATCH (v1)-[e :${ edgeType }]->(v2)
+        WHERE 1 == 1
+        @if ( isNotEmpty( '${ fromVertexId }' ) ) {
+        and id(v1) == '${ fromVertexId }'
+        @}
+        @if ( isNotEmpty( '${ toVertexId }' ) ) {
+        and id(v2) == '${ toVertexId }'
+        @}
+        RETURN type(e) as type ,
+        id(v1) as fromVertexId, tags(v1)[0] as fromType ,
+        id(v2) as toVertexId, tags(v1)[0] as toType ,
+        properties(e).ctime as createTime
+        order by createTime desc
+        skip ${ offset } limit ${ limit }
+    </select>
 </mapper>

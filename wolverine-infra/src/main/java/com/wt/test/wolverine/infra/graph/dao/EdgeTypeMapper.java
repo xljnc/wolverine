@@ -3,7 +3,7 @@ package com.wt.test.wolverine.infra.graph.dao;
 import org.springframework.data.repository.query.Param;
 
 /**
- *  图数据库 edge-type mapper
+ * 图数据库 edge-type mapper
  *
  * @author qiyu
  * @since 2023/7/6
@@ -24,4 +24,12 @@ public interface EdgeTypeMapper {
      * @param name edge-type名称
      */
     void deleteEdgeType(@Param("name") String name);
+    
+    /**
+     * 在edge-type的ctime属性上创建index
+     *
+     * @param name        edge-type名称
+     */
+    void createEdgeTypeIndex(@Param("edgeTypeName") String edgeTypeName,
+                             @Param("indexName") String indexName);
 }

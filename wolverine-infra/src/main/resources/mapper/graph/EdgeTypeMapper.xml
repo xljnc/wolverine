@@ -6,4 +6,8 @@
     <delete id="deleteEdgeType">
         DROP EDGE IF EXISTS ${ name }
     </delete>
+
+    <insert id="createEdgeTypeIndex">
+        CREATE EDGE INDEX IF NOT EXISTS ${ indexName } on ${ edgeTypeName }(ctime)
+    </insert>
 </mapper>

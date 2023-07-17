@@ -8,8 +8,12 @@ import lombok.Getter;
  */
 @Getter
 public enum ResponseCode {
-    BUSINESS_NOT_EXIST(1000, "业务类型不存在"),
-    RELATIONSHIP_NOT_EXIST(2000, "关系类型不存在"),
+    //通用错误，1000-9999
+    PARAM_ERROR(1000,"参数错误"),
+    
+    //业务错误，10000 -
+    BUSINESS_NOT_EXIST(10000, "业务类型不存在"),
+    RELATIONSHIP_NOT_EXIST(20000, "关系类型不存在"),
     ;
     
     private final Integer code;

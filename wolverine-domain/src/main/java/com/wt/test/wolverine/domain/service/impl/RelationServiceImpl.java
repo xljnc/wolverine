@@ -50,6 +50,17 @@ public class RelationServiceImpl implements RelationService {
     }
     
     /**
+     * 删除 关系
+     *
+     * @param relationInfo RelationInfo
+     */
+    @Override
+    public void deleteRelation(RelationInfo relationInfo) {
+        relationDao.deleteRelation(relationInfo);
+        relationCacheDao.deleteRelation(relationInfo);
+    }
+    
+    /**
      * 获取关系
      *
      * @param relationshipCode 关系类型code
@@ -102,7 +113,7 @@ public class RelationServiceImpl implements RelationService {
     private static RelationInfo createFakeRelation() {
         return RelationInfo.builder().build();
     }
-   
+    
     /**
      * 判断是否假的 关系
      *
@@ -122,9 +133,36 @@ public class RelationServiceImpl implements RelationService {
      * @return List<RelationInfo> 关系列表
      */
     @Override
-    public List<RelationInfo> relationBidirection(String vertexAId,
-                                                  String vertexBId,
-                                                  List<String> relationshipCodes) {
+    public List<RelationInfo> relationBidirection(String vertexAId, String vertexBId, List<String> relationshipCodes) {
         return relationDao.queryEdgeBidirection(vertexAId, vertexBId, relationshipCodes);
+    }
+    
+    /**
+     * 获取关系数量
+     *
+     * @param relationshipCode 关系类型code
+     * @param fromVertexId     起点id
+     * @param toVertexId       终点id
+     * @return 关系数量
+     */
+    @Override
+    public Long getRelationCount(String relationshipCode, String fromVertexId, String toVertexId) {
+        return relationDao.getRelationCount(relationshipCode, fromVertexId, toVertexId);
+    }
+    
+    /**
+     * 获取关系数量
+     *
+     * @param relationshipCode 关系类型code
+     * @param fromVertexId     起点id
+     * @param toVertexId       终点id
+     * @param pageId           当前分页id
+     * @param pageSize         分页数量
+     * @return List<RelationInfo> 关系列表
+     */
+    @Override
+    public List<RelationInfo> queryRelation(String relationshipCode, String fromVertexId, String toVertexId, Integer pageId, Integer pageSize) {
+        Long offset = (pageId - 1) * (long) pageSize;
+        return relationDao.queryRelation(relationshipCode, fromVertexId, toVertexId, Long.valueOf(pageSize), offset);
     }
 }

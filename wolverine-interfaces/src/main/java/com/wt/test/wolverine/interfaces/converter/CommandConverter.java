@@ -1,13 +1,7 @@
 package com.wt.test.wolverine.interfaces.converter;
 
-import com.wt.test.wolverine.app.dto.BusinessDTO;
-import com.wt.test.wolverine.app.dto.RelationBidirectionDTO;
-import com.wt.test.wolverine.app.dto.RelationCreateDTO;
-import com.wt.test.wolverine.app.dto.RelationshipDTO;
-import com.wt.test.wolverine.interfaces.dto.req.BusinessCreateCommand;
-import com.wt.test.wolverine.interfaces.dto.req.RelationBidirectionQuery;
-import com.wt.test.wolverine.interfaces.dto.req.RelationCreateCommand;
-import com.wt.test.wolverine.interfaces.dto.req.RelationshipCreateCommand;
+import com.wt.test.wolverine.app.dto.*;
+import com.wt.test.wolverine.interfaces.dto.req.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -39,12 +33,12 @@ public interface CommandConverter {
     RelationshipDTO toRelationshipDTO(RelationshipCreateCommand createCommand);
     
     /**
-     * RelationCreateCommand 转 RelationCreateDTO
+     * RelationManageCommand 转 RelationManageDTO
      *
-     * @param createCommand RelationCreateCommand
-     * @return RelationCreateDTO
+     * @param manageCommand RelationManageCommand
+     * @return RelationManageDTO
      */
-    RelationCreateDTO toRelationDTO(RelationCreateCommand createCommand);
+    RelationManageDTO toRelationDTO(RelationManageCommand manageCommand);
     
     /**
      * RelationBidirectionQuery 转 RelationBidirectionDTO
@@ -53,5 +47,13 @@ public interface CommandConverter {
      * @return RelationBidirectionDTO
      */
     RelationBidirectionDTO toRelationBidirectionDTO(RelationBidirectionQuery bidirectionQuery);
+    
+    /**
+     * RelationPageQuery 转 RelationPageQueryDTO
+     *
+     * @param pageQuery RelationPageQuery
+     * @return RelationPageQueryDTO
+     */
+    RelationPageQueryDTO toRelationPageQueryDTO(RelationPageQuery pageQuery);
     
 }
