@@ -70,4 +70,14 @@ public interface RelationService {
      */
     List<RelationInfo> queryRelation(String relationshipCode, String fromVertexId,
                       String toVertexId, Integer pageId, Integer pageSize);
+    
+    
+    /**
+     * 获取节点关系的入和出
+     *
+     * @param vertexId         节点id
+     * @param relationshipCode 关系类型
+     * @return List<RelationInfo> 关系列表
+     */
+    List<RelationInfo> relationInOut(String vertexId, String relationshipCode);
 }

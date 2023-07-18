@@ -1,4 +1,4 @@
-package com.wt.test.wolverine.interfaces.controller.admin;
+package com.wt.test.wolverine.interfaces.controller.inner;
 
 import com.wt.test.wolverine.app.common.component.response.BaseResponse;
 import com.wt.test.wolverine.app.dto.RelationshipDTO;

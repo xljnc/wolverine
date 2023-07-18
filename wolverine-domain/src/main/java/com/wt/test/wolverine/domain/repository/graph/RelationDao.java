@@ -109,4 +109,18 @@ public class RelationDao {
         List<EdgeDO> edgeDOList = edgeMapper.queryEdge(relationshipCode, fromVertexId, toVertexId, limit, offset);
         return EntityConverter.INSTANCE.toRelationInfoList(edgeDOList);
     }
+    
+    
+    /**
+     * 获取节点关系的入和出
+     *
+     * @param vertexId         节点id
+     * @param relationshipCode 关系类型
+     * @return List<RelationInfo> 关系列表
+     */
+    public List<RelationInfo> relationInOut(String vertexId, String relationshipCode) {
+        List<EdgeDO> edgeDOList = edgeMapper.edgeInOut(vertexId, relationshipCode);
+        return EntityConverter.INSTANCE.toRelationInfoList(edgeDOList);
+    }
+    
 }

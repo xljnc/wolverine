@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.wt.test.wolverine.app.common.component.exception.BizException;
 import com.wt.test.wolverine.app.common.component.response.ResponseCode;
 import com.wt.test.wolverine.app.converter.DtoConverter;
-import com.wt.test.wolverine.app.dto.RelationBiDirectionDTO;
-import com.wt.test.wolverine.app.dto.RelationDTO;
-import com.wt.test.wolverine.app.dto.RelationManageDTO;
-import com.wt.test.wolverine.app.dto.RelationPageQueryDTO;
+import com.wt.test.wolverine.app.dto.*;
 import com.wt.test.wolverine.app.util.BusinessUtil;
 import com.wt.test.wolverine.app.util.VertexUtil;
 import com.wt.test.wolverine.app.vo.RelationPageVO;
@@ -151,12 +148,12 @@ public class RelationManager {
         }
         //获取关系分页总量
         Long count = relationService.getRelationCount(pageQueryDTO.getRelationshipCode(), fromVertexId, toVertexId);
-        if (Objects.equals(count,0L)){
+        if (Objects.equals(count, 0L)) {
             return RelationPageVO.createEmptyVo(pageQueryDTO.getPageId(), pageQueryDTO.getPageSize());
         }
         //获取关系当前页
-        List<RelationInfo> relationInfoList =  relationService.queryRelation(pageQueryDTO.getRelationshipCode(),
-                fromVertexId, toVertexId, pageQueryDTO.getPageId(),pageQueryDTO.getPageSize());
+        List<RelationInfo> relationInfoList = relationService.queryRelation(pageQueryDTO.getRelationshipCode(),
+                fromVertexId, toVertexId, pageQueryDTO.getPageId(), pageQueryDTO.getPageSize());
         return RelationPageVO.builder().relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList))
                 .count(count)
                 .pageId(pageQueryDTO.getPageId())
@@ -164,4 +161,20 @@ public class RelationManager {
                 .build();
         
     }
+    
+    /**
+     * 获取节点间的双向关系
+     *
+     * @param inOutDTO 双向关系查询对象
+     * @return RelationVO 关系VO
+     */
+    public RelationVO relationInOut(RelationInOutDTO inOutDTO) {
+        //需要先校验业务类型是否存在
+        BusinessInfo bizBusiness = businessService.getBusiness(inOutDTO.getBizType());
+        BusinessUtil.businessExist(bizBusiness, inOutDTO.getBizType());
+        String vertexId = VertexUtil.createVertexId(inOutDTO.getBizType(), inOutDTO.getBizId());
+        List<RelationInfo> relationInfoList = relationService.relationInOut(vertexId, inOutDTO.getRelationshipCode());
+        return RelationVO.builder().relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList)).build();
+    }
+    
 }

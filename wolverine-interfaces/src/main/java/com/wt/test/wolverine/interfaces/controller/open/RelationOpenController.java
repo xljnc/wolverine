@@ -1,18 +1,12 @@
 package com.wt.test.wolverine.interfaces.controller.open;
 
 import com.wt.test.wolverine.app.common.component.response.BaseResponse;
-import com.wt.test.wolverine.app.dto.RelationBiDirectionDTO;
-import com.wt.test.wolverine.app.dto.RelationDTO;
-import com.wt.test.wolverine.app.dto.RelationManageDTO;
-import com.wt.test.wolverine.app.dto.RelationPageQueryDTO;
+import com.wt.test.wolverine.app.dto.*;
 import com.wt.test.wolverine.app.manager.RelationManager;
 import com.wt.test.wolverine.app.vo.RelationPageVO;
 import com.wt.test.wolverine.app.vo.RelationVO;
 import com.wt.test.wolverine.interfaces.converter.CommandConverter;
-import com.wt.test.wolverine.interfaces.dto.req.RelationBiDirectionQuery;
-import com.wt.test.wolverine.interfaces.dto.req.RelationManageCommand;
-import com.wt.test.wolverine.interfaces.dto.req.RelationPageQuery;
-import com.wt.test.wolverine.interfaces.dto.req.RelationQuery;
+import com.wt.test.wolverine.interfaces.dto.req.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +27,9 @@ public class RelationOpenController {
     
     private final RelationManager relationManager;
     
+    /**
+     * 创建关系
+     */
     @PostMapping("/v1/create")
     public BaseResponse<Boolean> createRelation(@RequestBody @Valid RelationManageCommand manageCommand) {
         RelationManageDTO manageDTO = CommandConverter.INSTANCE.toRelationDTO(manageCommand);
@@ -40,6 +37,9 @@ public class RelationOpenController {
         return BaseResponse.success(Boolean.TRUE);
     }
     
+    /**
+     * 取消关系
+     */
     @PostMapping("/v1/cancel")
     public BaseResponse<Boolean> cancelRelation(@RequestBody @Valid RelationManageCommand manageCommand) {
         RelationManageDTO manageDTO = CommandConverter.INSTANCE.toRelationDTO(manageCommand);
@@ -74,6 +74,16 @@ public class RelationOpenController {
     public BaseResponse<RelationVO> relationBidirection(@RequestBody @Valid RelationBiDirectionQuery biDirectionQuery) {
         RelationBiDirectionDTO biDirectionDTO = CommandConverter.INSTANCE.toRelationBiDirectionDTO(biDirectionQuery);
         RelationVO relationVO = relationManager.relationBiDirection(biDirectionDTO);
+        return BaseResponse.success(relationVO);
+    }
+    
+    /**
+     * 获取节点关系的入和出
+     */
+    @PostMapping("/v1/inout")
+    public BaseResponse<RelationVO> relationInOut(@RequestBody @Valid RelationInOutQuery inOutQuery) {
+        RelationInOutDTO inOutDTO = CommandConverter.INSTANCE.toRelationInOutDTO(inOutQuery);
+        RelationVO relationVO = relationManager.relationInOut(inOutDTO);
         return BaseResponse.success(relationVO);
     }
 }

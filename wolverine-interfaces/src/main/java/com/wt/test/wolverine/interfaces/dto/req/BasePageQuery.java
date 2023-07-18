@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PageQueryBase implements Serializable {
+public class BasePageQuery implements Serializable {
     
     @Serial
     private static final long serialVersionUID = -5918236162149992717L;

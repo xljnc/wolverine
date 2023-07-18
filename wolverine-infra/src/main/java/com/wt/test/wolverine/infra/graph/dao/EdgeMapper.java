@@ -80,4 +80,13 @@ public interface EdgeMapper {
                            @Param("limit") Long limit,
                            @Param("offset") Long offset);
     
+    /**
+     * 获取节点关系的入和出
+     *
+     * @param vertexId 节点id
+     * @param edgeType 关系类型
+     * @return List<EdgeDO> 关系列表
+     */
+    List<EdgeDO> edgeInOut(@Param("vertexId")String vertexId,
+                           @Param("edgeType") String edgeType);
 }

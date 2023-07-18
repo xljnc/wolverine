@@ -56,4 +56,12 @@ public interface CommandConverter {
      */
     RelationPageQueryDTO toRelationPageQueryDTO(RelationPageQuery pageQuery);
     
+    /**
+     * RelationInOutQuery 转 RelationInOutDTO
+     *
+     * @param inOutQuery RelationInOutQuery
+     * @return RelationInOutDTO
+     */
+    RelationInOutDTO toRelationInOutDTO(RelationInOutQuery inOutQuery);
+    
 }
