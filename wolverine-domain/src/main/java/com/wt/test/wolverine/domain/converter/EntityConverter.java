@@ -63,7 +63,7 @@ public interface EntityConverter {
      * @param vertexDO VertexDO
      * @return VertexInfo
      */
-    @Mapping(target = "createTime", expression = "java(vertexDO.getCreateTime() * 1000L)")
+    @Mapping(target = "createTime", expression = "java(vertexDO.getCreateTime() == null?null:vertexDO.getCreateTime() * 1000L)")
     VertexInfo toVertexInfo(VertexDO vertexDO);
     
     /**
@@ -72,7 +72,7 @@ public interface EntityConverter {
      * @param vertexInfo VertexInfo
      * @return VertexDO
      */
-    @Mapping(target = "createTime", expression = "java(vertexInfo.getCreateTime() / 1000L)")
+    @Mapping(target = "createTime", expression = "java(vertexInfo.getCreateTime() == null?null:vertexInfo.getCreateTime() / 1000L)")
     VertexDO toVertexDO(VertexInfo vertexInfo);
     
     /**
@@ -82,17 +82,17 @@ public interface EntityConverter {
      * @return EdgeDO
      */
     @Mapping(target = "type", source = "relationshipCode")
-    @Mapping(target = "createTime", expression = "java(relationInfo.getCreateTime() / 1000L)")
+    @Mapping(target = "createTime", expression = "java(relationInfo.getCreateTime() == null?null:relationInfo.getCreateTime() / 1000L)")
     EdgeDO toEdgeDO(RelationInfo relationInfo);
     
     /**
-     * List<EdgeDO> 转 List<RelationInfo>
+     * EdgeDO 转 RelationInfo
      *
-     * @param edgeDOList List<EdgeDO>
+     * @param edgeDO EdgeDO
      * @return java.util.List<com.wt.test.wolverine.domain.entity.RelationInfo>
      */
     @Mapping(target = "relationshipCode", source = "type")
-    @Mapping(target = "createTime", expression = "java(edgeDO.getCreateTime() * 1000L)")
+    @Mapping(target = "createTime", expression = "java(edgeDO.getCreateTime() == null?null:edgeDO.getCreateTime() * 1000L)")
     RelationInfo toRelation(EdgeDO edgeDO);
     
     /**
