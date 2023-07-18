@@ -2,16 +2,14 @@ package com.wt.test.wolverine.interfaces.dto.req;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 
 /**
- * 双向关系查询 query
+ * 关系多向查询 query
  *
  * @author qiyu
  * @since 2023/7/13
@@ -19,9 +17,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class RelationBidirectionQuery implements Serializable {
-    
+public class RelationMultiDirectionQuery implements Serializable {
+
     @Serial
     private static final long serialVersionUID = -5918236162149992717L;
     
@@ -36,9 +33,5 @@ public class RelationBidirectionQuery implements Serializable {
     
     @NotBlank(message = "节点B-ID不能为空")
     private String bizIdB;
-    /**
-     * 关系类型列表
-     */
-    private List<String> relationshipCodes;
     
 }

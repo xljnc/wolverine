@@ -17,7 +17,7 @@
         properties(e).ctime as createTime
     </select>
 
-    <select id="queryEdgeBidirection" resultType="com.wt.test.wolverine.infra.graph.model.EdgeDO">
+    <select id="queryEdgeBiDirection" resultType="com.wt.test.wolverine.infra.graph.model.EdgeDO">
         MATCH p = (v1)-[e ${ edgeTypes }]-(v2)
         WHERE id(v1) == '${ vertexAId }' and id(v2) == '${ vertexBId }'
         RETURN type(e) as type ,

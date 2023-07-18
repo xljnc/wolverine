@@ -6,9 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
- * 关系分页查询 dto
+ * 关系查询 query
  *
  * @author qiyu
  * @since 2023/7/13
@@ -17,15 +18,13 @@ import java.io.Serial;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class RelationPageQueryDTO extends PageDtoBase{
+public class PageDtoBase implements Serializable {
     
     @Serial
     private static final long serialVersionUID = -5918236162149992717L;
+
+    private Integer pageId;
     
-    private String relationshipCode;
-    
-    private String fromId;
-    
-    private String toId;
+    private Integer pageSize;
     
 }

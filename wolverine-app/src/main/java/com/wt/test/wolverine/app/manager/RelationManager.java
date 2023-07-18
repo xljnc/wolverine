@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.wt.test.wolverine.app.common.component.exception.BizException;
 import com.wt.test.wolverine.app.common.component.response.ResponseCode;
 import com.wt.test.wolverine.app.converter.DtoConverter;
-import com.wt.test.wolverine.app.dto.RelationBidirectionDTO;
+import com.wt.test.wolverine.app.dto.RelationBiDirectionDTO;
 import com.wt.test.wolverine.app.dto.RelationDTO;
 import com.wt.test.wolverine.app.dto.RelationManageDTO;
 import com.wt.test.wolverine.app.dto.RelationPageQueryDTO;
@@ -109,18 +109,18 @@ public class RelationManager {
     /**
      * 获取节点间的双向关系
      *
-     * @param bidirectionDTO 双向关系查询对象
+     * @param biDirectionDTO 双向关系查询对象
      * @return RelationVO 关系VO
      */
-    public RelationVO relationBidirection(RelationBidirectionDTO bidirectionDTO) {
+    public RelationVO relationBiDirection(RelationBiDirectionDTO biDirectionDTO) {
         //需要先校验业务类型是否存在
-        BusinessInfo bizABusiness = businessService.getBusiness(bidirectionDTO.getBizTypeA());
-        BusinessUtil.businessExist(bizABusiness, bidirectionDTO.getBizTypeA());
-        BusinessInfo bizBBusiness = businessService.getBusiness(bidirectionDTO.getBizTypeB());
-        BusinessUtil.businessExist(bizBBusiness, bidirectionDTO.getBizTypeB());
-        String vertexAId = VertexUtil.createVertexId(bidirectionDTO.getBizTypeA(), bidirectionDTO.getBizIdA());
-        String vertexBId = VertexUtil.createVertexId(bidirectionDTO.getBizTypeB(), bidirectionDTO.getBizIdB());
-        List<RelationInfo> relationInfoList = relationService.relationBidirection(vertexAId, vertexBId, bidirectionDTO.getRelationshipCodes());
+        BusinessInfo bizABusiness = businessService.getBusiness(biDirectionDTO.getBizTypeA());
+        BusinessUtil.businessExist(bizABusiness, biDirectionDTO.getBizTypeA());
+        BusinessInfo bizBBusiness = businessService.getBusiness(biDirectionDTO.getBizTypeB());
+        BusinessUtil.businessExist(bizBBusiness, biDirectionDTO.getBizTypeB());
+        String vertexAId = VertexUtil.createVertexId(biDirectionDTO.getBizTypeA(), biDirectionDTO.getBizIdA());
+        String vertexBId = VertexUtil.createVertexId(biDirectionDTO.getBizTypeB(), biDirectionDTO.getBizIdB());
+        List<RelationInfo> relationInfoList = relationService.relationBiDirection(vertexAId, vertexBId, biDirectionDTO.getRelationshipCodes());
         return RelationVO.builder().relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList)).build();
     }
     

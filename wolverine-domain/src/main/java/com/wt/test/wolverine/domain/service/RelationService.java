@@ -44,7 +44,7 @@ public interface RelationService {
      * @param relationshipCodes 关系类型列表
      * @return List<RelationInfo> 关系列表
      */
-    List<RelationInfo> relationBidirection(String vertexAId,
+    List<RelationInfo> relationBiDirection(String vertexAId,
                                            String vertexBId,
                                            List<String> relationshipCodes);
     

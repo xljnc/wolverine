@@ -1,7 +1,7 @@
 package com.wt.test.wolverine.interfaces.controller.open;
 
 import com.wt.test.wolverine.app.common.component.response.BaseResponse;
-import com.wt.test.wolverine.app.dto.RelationBidirectionDTO;
+import com.wt.test.wolverine.app.dto.RelationBiDirectionDTO;
 import com.wt.test.wolverine.app.dto.RelationDTO;
 import com.wt.test.wolverine.app.dto.RelationManageDTO;
 import com.wt.test.wolverine.app.dto.RelationPageQueryDTO;
@@ -9,7 +9,7 @@ import com.wt.test.wolverine.app.manager.RelationManager;
 import com.wt.test.wolverine.app.vo.RelationPageVO;
 import com.wt.test.wolverine.app.vo.RelationVO;
 import com.wt.test.wolverine.interfaces.converter.CommandConverter;
-import com.wt.test.wolverine.interfaces.dto.req.RelationBidirectionQuery;
+import com.wt.test.wolverine.interfaces.dto.req.RelationBiDirectionQuery;
 import com.wt.test.wolverine.interfaces.dto.req.RelationManageCommand;
 import com.wt.test.wolverine.interfaces.dto.req.RelationPageQuery;
 import com.wt.test.wolverine.interfaces.dto.req.RelationQuery;
@@ -71,9 +71,9 @@ public class RelationOpenController {
      * 获取节点间的双向关系
      */
     @PostMapping("/v1/bidirection")
-    public BaseResponse<RelationVO> relationBidirection(@RequestBody @Valid RelationBidirectionQuery bidirectionQuery) {
-        RelationBidirectionDTO bidirectionDTO = CommandConverter.INSTANCE.toRelationBidirectionDTO(bidirectionQuery);
-        RelationVO relationVO = relationManager.relationBidirection(bidirectionDTO);
+    public BaseResponse<RelationVO> relationBidirection(@RequestBody @Valid RelationBiDirectionQuery biDirectionQuery) {
+        RelationBiDirectionDTO biDirectionDTO = CommandConverter.INSTANCE.toRelationBiDirectionDTO(biDirectionQuery);
+        RelationVO relationVO = relationManager.relationBiDirection(biDirectionDTO);
         return BaseResponse.success(relationVO);
     }
 }

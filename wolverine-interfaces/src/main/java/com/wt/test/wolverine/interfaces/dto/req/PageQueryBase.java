@@ -1,12 +1,13 @@
 package com.wt.test.wolverine.interfaces.dto.req;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 关系查询 query
@@ -14,20 +15,20 @@ import java.io.Serial;
  * @author qiyu
  * @since 2023/7/13
  */
-@EqualsAndHashCode(callSuper = false)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RelationPageQuery extends PageQueryBase {
+public class PageQueryBase implements Serializable {
     
     @Serial
     private static final long serialVersionUID = -5918236162149992717L;
     
-    @NotBlank(message = "关系类型code不能为空")
-    private String relationshipCode;
+    @NotNull(message = "pageId不能为空")
+    @Min(1L)
+    private Integer pageId;
     
-    private String fromId;
-    
-    private String toId;
+    @NotNull(message = "pageSize不能为空")
+    @Min(1L)
+    private Integer pageSize;
     
 }

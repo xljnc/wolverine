@@ -64,7 +64,7 @@ public class RelationDao {
      * @param relationshipCodes 关系类型列表
      * @return List<RelationInfo> 关系列表
      */
-    public List<RelationInfo> queryEdgeBidirection(String vertexAId,
+    public List<RelationInfo> queryEdgeBiDirection(String vertexAId,
                                                    String vertexBId,
                                                    List<String> relationshipCodes) {
         //如果关系类型
@@ -72,7 +72,7 @@ public class RelationDao {
         if (CollUtil.isNotEmpty(relationshipCodes)) {
             relationshipList = relationListToString(relationshipCodes);
         }
-        List<EdgeDO> edgeDOList = edgeMapper.queryEdgeBidirection(vertexAId, vertexBId, relationshipList);
+        List<EdgeDO> edgeDOList = edgeMapper.queryEdgeBiDirection(vertexAId, vertexBId, relationshipList);
         return EntityConverter.INSTANCE.toRelationInfoList(edgeDOList);
     }
     

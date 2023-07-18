@@ -41,12 +41,12 @@ public interface CommandConverter {
     RelationManageDTO toRelationDTO(RelationManageCommand manageCommand);
     
     /**
-     * RelationBidirectionQuery 转 RelationBidirectionDTO
+     * RelationBiDirectionQuery 转 RelationBiDirectionDTO
      *
-     * @param bidirectionQuery RelationBidirectionQuery
-     * @return RelationBidirectionDTO
+     * @param biDirectionQuery RelationBiDirectionQuery
+     * @return RelationBiDirectionDTO
      */
-    RelationBidirectionDTO toRelationBidirectionDTO(RelationBidirectionQuery bidirectionQuery);
+    RelationBiDirectionDTO toRelationBiDirectionDTO(RelationBiDirectionQuery biDirectionQuery);
     
     /**
      * RelationPageQuery 转 RelationPageQueryDTO

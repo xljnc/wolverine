@@ -48,7 +48,7 @@ public interface EdgeMapper {
      * @param edgeTypes 关系类型列表
      * @return java.util.List<com.wt.test.wolverine.infra.graph.model.EdgeDO>
      */
-    List<EdgeDO> queryEdgeBidirection(@Param("vertexAId") String vertexAId,
+    List<EdgeDO> queryEdgeBiDirection(@Param("vertexAId") String vertexAId,
                                       @Param("vertexBId") String vertexBId,
                                       @Param("edgeTypes") String edgeTypes);
     

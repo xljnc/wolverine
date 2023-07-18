@@ -133,8 +133,8 @@ public class RelationServiceImpl implements RelationService {
      * @return List<RelationInfo> 关系列表
      */
     @Override
-    public List<RelationInfo> relationBidirection(String vertexAId, String vertexBId, List<String> relationshipCodes) {
-        return relationDao.queryEdgeBidirection(vertexAId, vertexBId, relationshipCodes);
+    public List<RelationInfo> relationBiDirection(String vertexAId, String vertexBId, List<String> relationshipCodes) {
+        return relationDao.queryEdgeBiDirection(vertexAId, vertexBId, relationshipCodes);
     }
     
     /**
