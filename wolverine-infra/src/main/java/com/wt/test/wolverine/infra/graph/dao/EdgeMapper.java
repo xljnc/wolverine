@@ -1,5 +1,6 @@
 package com.wt.test.wolverine.infra.graph.dao;
 
+import com.wt.test.wolverine.infra.graph.model.EdgeCountDO;
 import com.wt.test.wolverine.infra.graph.model.EdgeDO;
 import org.springframework.data.repository.query.Param;
 
@@ -87,6 +88,16 @@ public interface EdgeMapper {
      * @param edgeType 关系类型
      * @return List<EdgeDO> 关系列表
      */
-    List<EdgeDO> edgeInOut(@Param("vertexId")String vertexId,
+    List<EdgeDO> edgeInOut(@Param("vertexId") String vertexId,
                            @Param("edgeType") String edgeType);
+    
+    /**
+     * 获取节点关系的入度和出度
+     *
+     * @param vertexId 节点id
+     * @param edgeType 关系类型
+     * @return 节点关系的入度和出度
+     */
+    EdgeCountDO edgeInOutCount(@Param("vertexId") String vertexId,
+                               @Param("edgeType") String edgeType);
 }

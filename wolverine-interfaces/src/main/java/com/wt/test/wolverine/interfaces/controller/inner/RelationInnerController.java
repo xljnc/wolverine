@@ -1,6 +1,15 @@
 package com.wt.test.wolverine.interfaces.controller.inner;
 
+import com.wt.test.wolverine.app.common.component.response.BaseResponse;
+import com.wt.test.wolverine.app.dto.RelationInOutDTO;
+import com.wt.test.wolverine.app.manager.RelationManager;
+import com.wt.test.wolverine.app.vo.RelationInOutVO;
+import com.wt.test.wolverine.interfaces.converter.CommandConverter;
+import com.wt.test.wolverine.interfaces.dto.req.RelationInOutQuery;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,5 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/inner/api/relation")
 @RequiredArgsConstructor
 public class RelationInnerController {
-
+    
+    private final RelationManager relationManager;
+    
+    /**
+     * 获取节点关系的入和出
+     */
+    @PostMapping("/v1/inout")
+    public BaseResponse<RelationInOutVO> relationInOut(@RequestBody @Valid RelationInOutQuery inOutQuery) {
+        RelationInOutDTO inOutDTO = CommandConverter.INSTANCE.toRelationInOutDTO(inOutQuery);
+        RelationInOutVO inOutVO = relationManager.relationInOut(inOutDTO);
+        return BaseResponse.success(inOutVO);
+    }
 }

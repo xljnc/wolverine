@@ -1,11 +1,9 @@
 package com.wt.test.wolverine.domain.converter;
 
-import com.wt.test.wolverine.domain.entity.BusinessInfo;
-import com.wt.test.wolverine.domain.entity.RelationInfo;
-import com.wt.test.wolverine.domain.entity.RelationshipInfo;
-import com.wt.test.wolverine.domain.entity.VertexInfo;
+import com.wt.test.wolverine.domain.entity.*;
 import com.wt.test.wolverine.infra.db.model.BusinessDO;
 import com.wt.test.wolverine.infra.db.model.RelationshipDO;
+import com.wt.test.wolverine.infra.graph.model.EdgeCountDO;
 import com.wt.test.wolverine.infra.graph.model.EdgeDO;
 import com.wt.test.wolverine.infra.graph.model.VertexDO;
 import org.mapstruct.Mapper;
@@ -102,4 +100,12 @@ public interface EntityConverter {
      * @return java.util.List<com.wt.test.wolverine.domain.entity.RelationInfo>
      */
     List<RelationInfo> toRelationInfoList(List<EdgeDO> edgeDOList);
+    
+    /**
+     * EdgeCountDO 转 RelationCountInfo
+     *
+     * @param countDO EdgeCountDO
+     * @return RelationCountInfo
+     */
+    RelationCountInfo toRelationCountInfo(EdgeCountDO countDO);
 }

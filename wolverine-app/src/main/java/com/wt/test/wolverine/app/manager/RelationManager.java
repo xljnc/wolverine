@@ -7,12 +7,10 @@ import com.wt.test.wolverine.app.converter.DtoConverter;
 import com.wt.test.wolverine.app.dto.*;
 import com.wt.test.wolverine.app.util.BusinessUtil;
 import com.wt.test.wolverine.app.util.VertexUtil;
+import com.wt.test.wolverine.app.vo.RelationInOutVO;
 import com.wt.test.wolverine.app.vo.RelationPageVO;
 import com.wt.test.wolverine.app.vo.RelationVO;
-import com.wt.test.wolverine.domain.entity.BusinessInfo;
-import com.wt.test.wolverine.domain.entity.RelationInfo;
-import com.wt.test.wolverine.domain.entity.RelationshipInfo;
-import com.wt.test.wolverine.domain.entity.VertexInfo;
+import com.wt.test.wolverine.domain.entity.*;
 import com.wt.test.wolverine.domain.service.BusinessService;
 import com.wt.test.wolverine.domain.service.RelationService;
 import com.wt.test.wolverine.domain.service.RelationshipService;
@@ -20,7 +18,10 @@ import com.wt.test.wolverine.domain.service.VertexService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -168,13 +169,56 @@ public class RelationManager {
      * @param inOutDTO 双向关系查询对象
      * @return RelationVO 关系VO
      */
-    public RelationVO relationInOut(RelationInOutDTO inOutDTO) {
+    public RelationInOutVO relationInOut(RelationInOutDTO inOutDTO) {
         //需要先校验业务类型是否存在
         BusinessInfo bizBusiness = businessService.getBusiness(inOutDTO.getBizType());
+        //先查询关系类型是否存在
+        getRelationship(inOutDTO.getRelationshipCode());
         BusinessUtil.businessExist(bizBusiness, inOutDTO.getBizType());
         String vertexId = VertexUtil.createVertexId(inOutDTO.getBizType(), inOutDTO.getBizId());
         List<RelationInfo> relationInfoList = relationService.relationInOut(vertexId, inOutDTO.getRelationshipCode());
-        return RelationVO.builder().relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList)).build();
+        if (CollectionUtils.isEmpty(relationInfoList)) {
+            return RelationInOutVO.builder()
+                    .inCount(0L).inRelations(Collections.emptyList())
+                    .outCount(0L).outRelations(Collections.emptyList())
+                    .build();
+        }
+        List<RelationDTO> inRelations = new ArrayList<>();
+        List<RelationDTO> outRelations = new ArrayList<>();
+        relationInfoList.stream().map(DtoConverter.INSTANCE::toRelationDTO).forEach(
+                relationDTO -> {
+                    if (Objects.equals(relationDTO.getToId(), inOutDTO.getBizId())) {
+                        inRelations.add(relationDTO);
+                    } else {
+                        outRelations.add(relationDTO);
+                    }
+                }
+        );
+        return RelationInOutVO.builder()
+                .inCount((long) (inRelations.size())).inRelations(inRelations)
+                .outCount((long) outRelations.size()).outRelations(outRelations)
+                .build();
+    }
+    
+    
+    /**
+     * 获取节点间的双向关系
+     *
+     * @param inOutDTO 双向关系查询对象
+     * @return RelationVO 关系VO
+     */
+    public RelationInOutVO relationInOutCount(RelationInOutDTO inOutDTO) {
+        //需要先校验业务类型是否存在
+        BusinessInfo bizBusiness = businessService.getBusiness(inOutDTO.getBizType());
+        //先查询关系类型是否存在
+        getRelationship(inOutDTO.getRelationshipCode());
+        BusinessUtil.businessExist(bizBusiness, inOutDTO.getBizType());
+        String vertexId = VertexUtil.createVertexId(inOutDTO.getBizType(), inOutDTO.getBizId());
+        RelationCountInfo relationCountInfo = relationService.relationInOutCount(vertexId, inOutDTO.getRelationshipCode());
+        return RelationInOutVO.builder()
+                .outCount(relationCountInfo.getOutCount())
+                .inCount(relationCountInfo.getInCount())
+                .build();
     }
     
 }

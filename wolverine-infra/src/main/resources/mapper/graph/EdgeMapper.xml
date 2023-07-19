@@ -56,11 +56,17 @@
     </select>
 
     <select id="edgeInOut" resultType="com.wt.test.wolverine.infra.graph.model.EdgeDO">
-        MATCH p = (v)-[e :${ edgeType }]-(v2)
+        MATCH p = (v)-[e :${ edgeType }]-()
         WHERE id(v) == '${ vertexId }'
         RETURN type(e) as type ,
         src(e) as fromVertexId, tags(startNode(p))[0] as fromType ,
         dst(e) as toVertexId, tags(endNode(p))[0] as toType ,
         properties(e).ctime as createTime
+    </select>
+
+    <select id="edgeInOutCount" resultType="com.wt.test.wolverine.infra.graph.model.EdgeCountDO">
+        MATCH  (v1)-[e1 :${ edgeType } ]->() WHERE id(v1) == '${ vertexId }'
+        MATCH  ()-[e2 :${ edgeType } ]->(v2) WHERE id(v2) == '${ vertexId }'
+        return count(distinct e1) as outCount , count(distinct e2) as inCount
     </select>
 </mapper>

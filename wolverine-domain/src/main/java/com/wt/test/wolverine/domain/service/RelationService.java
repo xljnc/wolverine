@@ -1,5 +1,6 @@
 package com.wt.test.wolverine.domain.service;
 
+import com.wt.test.wolverine.domain.entity.RelationCountInfo;
 import com.wt.test.wolverine.domain.entity.RelationInfo;
 
 import java.util.List;
@@ -80,4 +81,13 @@ public interface RelationService {
      * @return List<RelationInfo> 关系列表
      */
     List<RelationInfo> relationInOut(String vertexId, String relationshipCode);
+    
+    /**
+     * 获取节点关系的出入数量
+     *
+     * @param vertexId         节点id
+     * @param relationshipCode 关系类型
+     * @return 关系的出入数量
+     */
+    RelationCountInfo relationInOutCount(String vertexId, String relationshipCode);
 }

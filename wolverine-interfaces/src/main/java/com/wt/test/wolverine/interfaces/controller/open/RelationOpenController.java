@@ -3,6 +3,7 @@ package com.wt.test.wolverine.interfaces.controller.open;
 import com.wt.test.wolverine.app.common.component.response.BaseResponse;
 import com.wt.test.wolverine.app.dto.*;
 import com.wt.test.wolverine.app.manager.RelationManager;
+import com.wt.test.wolverine.app.vo.RelationInOutVO;
 import com.wt.test.wolverine.app.vo.RelationPageVO;
 import com.wt.test.wolverine.app.vo.RelationVO;
 import com.wt.test.wolverine.interfaces.converter.CommandConverter;
@@ -78,12 +79,12 @@ public class RelationOpenController {
     }
     
     /**
-     * 获取节点关系的入和出
+     * 获取节点关系的入度和出度
      */
-    @PostMapping("/v1/inout")
-    public BaseResponse<RelationVO> relationInOut(@RequestBody @Valid RelationInOutQuery inOutQuery) {
+    @PostMapping("/v1/inout_count")
+    public BaseResponse<RelationInOutVO> relationInOutCount(@RequestBody @Valid RelationInOutQuery inOutQuery) {
         RelationInOutDTO inOutDTO = CommandConverter.INSTANCE.toRelationInOutDTO(inOutQuery);
-        RelationVO relationVO = relationManager.relationInOut(inOutDTO);
-        return BaseResponse.success(relationVO);
+        RelationInOutVO inOutVO = relationManager.relationInOutCount(inOutDTO);
+        return BaseResponse.success(inOutVO);
     }
 }

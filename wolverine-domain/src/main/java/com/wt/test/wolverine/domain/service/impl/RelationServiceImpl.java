@@ -2,6 +2,7 @@ package com.wt.test.wolverine.domain.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import com.wt.test.wolverine.domain.common.CommonConstants;
+import com.wt.test.wolverine.domain.entity.RelationCountInfo;
 import com.wt.test.wolverine.domain.entity.RelationInfo;
 import com.wt.test.wolverine.domain.repository.cache.RelationCacheDao;
 import com.wt.test.wolverine.domain.repository.graph.RelationDao;
@@ -176,5 +177,17 @@ public class RelationServiceImpl implements RelationService {
     @Override
     public List<RelationInfo> relationInOut(String vertexId, String relationshipCode) {
         return relationDao.relationInOut(vertexId, relationshipCode);
+    }
+    
+    /**
+     * 获取节点关系的出入数量
+     *
+     * @param vertexId         节点id
+     * @param relationshipCode 关系类型
+     * @return 关系的出入数量
+     */
+    @Override
+    public RelationCountInfo relationInOutCount(String vertexId, String relationshipCode) {
+        return relationDao.relationInOutCount(vertexId, relationshipCode);
     }
 }

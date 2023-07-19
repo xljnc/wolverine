@@ -2,8 +2,10 @@ package com.wt.test.wolverine.domain.repository.graph;
 
 import cn.hutool.core.collection.CollUtil;
 import com.wt.test.wolverine.domain.converter.EntityConverter;
+import com.wt.test.wolverine.domain.entity.RelationCountInfo;
 import com.wt.test.wolverine.domain.entity.RelationInfo;
 import com.wt.test.wolverine.infra.graph.dao.EdgeMapper;
+import com.wt.test.wolverine.infra.graph.model.EdgeCountDO;
 import com.wt.test.wolverine.infra.graph.model.EdgeDO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -121,6 +123,18 @@ public class RelationDao {
     public List<RelationInfo> relationInOut(String vertexId, String relationshipCode) {
         List<EdgeDO> edgeDOList = edgeMapper.edgeInOut(vertexId, relationshipCode);
         return EntityConverter.INSTANCE.toRelationInfoList(edgeDOList);
+    }
+    
+    /**
+     * 获取节点关系的入度和出度
+     *
+     * @param vertexId         节点id
+     * @param relationshipCode 关系类型
+     * @return List<RelationInfo> 关系列表
+     */
+    public RelationCountInfo relationInOutCount(String vertexId, String relationshipCode) {
+        EdgeCountDO countDO = edgeMapper.edgeInOutCount(vertexId, relationshipCode);
+        return EntityConverter.INSTANCE.toRelationCountInfo(countDO);
     }
     
 }
