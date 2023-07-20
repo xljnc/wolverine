@@ -8,8 +8,10 @@ import com.wt.test.wolverine.domain.repository.graph.VertexDao;
 import com.wt.test.wolverine.domain.service.VertexService;
 import com.wt.test.wolverine.infra.lock.util.LockUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -58,6 +60,28 @@ public class VertexServiceImpl implements VertexService {
             vertexInfo = null;
         }
         return vertexInfo;
+    }
+    
+    
+    /**
+     * 多度节点，最少2度
+     * 不返回自身
+     * 不返回存在1度关系的节点
+     *
+     * @param vertexId 节点id
+     * @param toType   目标节点类型
+     * @param degree   度数，尽量不要超过3
+     * @param edgeType 关系类型
+     * @param pageId   当前分页id
+     * @param pageSize 分页数量
+     * @return 多度节点
+     */
+    @Override
+    public List<VertexInfo> pageVertexMultiDegree(@NonNull String vertexId, @NonNull String toType,
+                                                  @NonNull Integer degree, String edgeType,
+                                                  @NonNull Integer pageId, @NonNull Integer pageSize) {
+        Long offset = (pageId - 1) * (long) pageSize;
+        return vertexDao.pageVertexMultiDegree(vertexId, toType, degree, edgeType, Long.valueOf(pageSize), offset);
     }
     
     /**

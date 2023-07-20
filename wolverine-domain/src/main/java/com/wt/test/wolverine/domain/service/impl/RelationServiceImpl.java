@@ -162,7 +162,8 @@ public class RelationServiceImpl implements RelationService {
      * @return List<RelationInfo> 关系列表
      */
     @Override
-    public List<RelationInfo> queryRelation(String relationshipCode, String fromVertexId, String toVertexId, Integer pageId, Integer pageSize) {
+    public List<RelationInfo> queryRelation(String relationshipCode, String fromVertexId,
+                                            String toVertexId, Integer pageId, Integer pageSize) {
         Long offset = (pageId - 1) * (long) pageSize;
         return relationDao.queryRelation(relationshipCode, fromVertexId, toVertexId, Long.valueOf(pageSize), offset);
     }

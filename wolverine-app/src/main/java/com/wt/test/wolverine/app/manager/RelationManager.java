@@ -1,11 +1,10 @@
 package com.wt.test.wolverine.app.manager;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.wt.test.wolverine.app.common.component.exception.BizException;
-import com.wt.test.wolverine.app.common.component.response.ResponseCode;
 import com.wt.test.wolverine.app.converter.DtoConverter;
 import com.wt.test.wolverine.app.dto.*;
 import com.wt.test.wolverine.app.util.BusinessUtil;
+import com.wt.test.wolverine.app.util.RelationshipUtil;
 import com.wt.test.wolverine.app.util.VertexUtil;
 import com.wt.test.wolverine.app.vo.RelationInOutVO;
 import com.wt.test.wolverine.app.vo.RelationPageVO;
@@ -130,9 +129,7 @@ public class RelationManager {
      */
     private RelationshipInfo getRelationship(String relationshipCode) {
         RelationshipInfo relationshipInfo = relationshipService.getRelationship(relationshipCode);
-        if (Objects.isNull(relationshipInfo)) {
-            throw new BizException(ResponseCode.RELATIONSHIP_NOT_EXIST.getCode(), ResponseCode.RELATIONSHIP_NOT_EXIST.getMessage());
-        }
+        RelationshipUtil.relationshipExist(relationshipInfo,relationshipCode);
         return relationshipInfo;
     }
     

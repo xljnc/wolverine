@@ -9,4 +9,22 @@
         WHERE id(v) == '${ vid }'
         RETURN id(v) as id, tags(v)[0] as tagName , properties(v).ctime as createTime
     </select>
+
+
+    <select id="pageVertexMultiDegree" resultType="com.wt.test.wolverine.infra.graph.model.VertexDO">
+        MATCH p = (v1)-[e1
+            @if ( isNotEmpty( edgeType ) ) {
+                :${ edgeType }
+            @}
+        *2..${ degree } ]->(v2 :${ toType })
+        WHERE id(v1) == '${ vertexId }'
+        and v1 != v2
+        and not (v1)-[
+            @if ( isNotEmpty( edgeType ) ) {
+                :${ edgeType }
+            @}
+        ]->(v2)
+        RETURN id(v2) as id, tags(v2)[0] as tagName , properties(v2).ctime as createTime
+        skip ${ offset } limit ${ limit }
+    </select>
 </mapper>

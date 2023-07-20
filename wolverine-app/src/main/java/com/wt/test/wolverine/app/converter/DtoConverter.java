@@ -3,9 +3,11 @@ package com.wt.test.wolverine.app.converter;
 import com.wt.test.wolverine.app.dto.BusinessDTO;
 import com.wt.test.wolverine.app.dto.RelationDTO;
 import com.wt.test.wolverine.app.dto.RelationshipDTO;
+import com.wt.test.wolverine.app.dto.VertexDTO;
 import com.wt.test.wolverine.domain.entity.BusinessInfo;
 import com.wt.test.wolverine.domain.entity.RelationInfo;
 import com.wt.test.wolverine.domain.entity.RelationshipInfo;
+import com.wt.test.wolverine.domain.entity.VertexInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -72,5 +74,13 @@ public interface DtoConverter {
      * @return List<RelationDTO>
      */
     List<RelationDTO> toRelationDtoList(List<RelationInfo> relationInfoList);
+    
+    /**
+     * List<VertexInfo> 转 List<VertexDTO>
+     *
+     * @param vertexInfoList List<VertexInfo>
+     * @return List<VertexDTO>
+     */
+    List<VertexDTO> toVertexDtoList(List<VertexInfo> vertexInfoList);
     
 }

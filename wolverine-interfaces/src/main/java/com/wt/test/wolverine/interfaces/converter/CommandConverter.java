@@ -64,4 +64,12 @@ public interface CommandConverter {
      */
     RelationInOutDTO toRelationInOutDTO(RelationInOutQuery inOutQuery);
     
+    /**
+     * VertexMultiDegreePageQuery 转 VertexMultiDegreePageDTO
+     *
+     * @param pageQuery VertexMultiDegreePageQuery
+     * @return VertexMultiDegreePageDTO
+     */
+    VertexMultiDegreePageDTO toVertexMultiDegreePageDTO(VertexMultiDegreePageQuery pageQuery);
+    
 }

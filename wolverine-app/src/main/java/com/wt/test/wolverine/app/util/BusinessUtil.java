@@ -21,7 +21,6 @@ public class BusinessUtil {
      *
      * @param businessInfo 业务类型信息
      * @param type 业务类型
-     * @return void
      */
     public static void businessExist(BusinessInfo businessInfo, String type) {
         if (Objects.isNull(businessInfo)) {

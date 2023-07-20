@@ -65,6 +65,14 @@ public interface EntityConverter {
     VertexInfo toVertexInfo(VertexDO vertexDO);
     
     /**
+     * List<VertexDO> 转 List<VertexInfo>
+     *
+     * @param vertexDOList List<VertexDO>
+     * @return List<VertexInfo>
+     */
+    List<VertexInfo> toVertexInfoList(List<VertexDO> vertexDOList);
+    
+    /**
      * VertexInfo 转 VertexDO
      *
      * @param vertexInfo VertexInfo

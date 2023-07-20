@@ -3,6 +3,7 @@ package com.wt.test.wolverine.infra.graph.dao;
 import com.wt.test.wolverine.infra.graph.model.EdgeCountDO;
 import com.wt.test.wolverine.infra.graph.model.EdgeDO;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -51,7 +52,7 @@ public interface EdgeMapper {
      */
     List<EdgeDO> queryEdgeBiDirection(@Param("vertexAId") String vertexAId,
                                       @Param("vertexBId") String vertexBId,
-                                      @Param("edgeTypes") String edgeTypes);
+                                      @Param("edgeTypes") @Nullable String edgeTypes);
     
     /**
      * 获取关系数量
@@ -76,8 +77,8 @@ public interface EdgeMapper {
      * @return 关系
      */
     List<EdgeDO> queryEdge(@Param("edgeType") String edgeType,
-                           @Param("fromVertexId") String fromVertexId,
-                           @Param("toVertexId") String toVertexId,
+                           @Param("fromVertexId") @Nullable String fromVertexId,
+                           @Param("toVertexId") @Nullable String toVertexId,
                            @Param("limit") Long limit,
                            @Param("offset") Long offset);
     
