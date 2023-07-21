@@ -87,4 +87,6 @@ public class RelationOpenController {
         RelationInOutVO inOutVO = relationManager.relationInOutCount(inOutDTO);
         return BaseResponse.success(inOutVO);
     }
+    
+    
 }

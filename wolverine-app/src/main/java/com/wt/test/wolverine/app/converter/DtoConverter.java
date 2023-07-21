@@ -64,7 +64,9 @@ public interface DtoConverter {
      * @return RelationDTO
      */
     @Mapping(target = "fromId", expression = "java(com.wt.test.wolverine.app.util.VertexUtil.getBizId(relationInfo.getFromVertexId()))")
+    @Mapping(target = "fromType", expression = "java(org.apache.commons.lang3.StringUtils.isBlank(relationInfo.getFromType())?com.wt.test.wolverine.app.util.VertexUtil.getBizType(relationInfo.getFromVertexId()):relationInfo.getFromType())")
     @Mapping(target = "toId", expression = "java(com.wt.test.wolverine.app.util.VertexUtil.getBizId(relationInfo.getToVertexId()))")
+    @Mapping(target = "toType", expression = "java(org.apache.commons.lang3.StringUtils.isBlank(relationInfo.getToType())?com.wt.test.wolverine.app.util.VertexUtil.getBizType(relationInfo.getToVertexId()):relationInfo.getToType())")
     RelationDTO toRelationDTO(RelationInfo relationInfo);
     
     /**

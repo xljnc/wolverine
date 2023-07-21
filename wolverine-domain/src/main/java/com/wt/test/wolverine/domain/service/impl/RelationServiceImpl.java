@@ -9,6 +9,7 @@ import com.wt.test.wolverine.domain.repository.graph.RelationDao;
 import com.wt.test.wolverine.domain.service.RelationService;
 import com.wt.test.wolverine.infra.lock.util.LockUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -190,5 +191,19 @@ public class RelationServiceImpl implements RelationService {
     @Override
     public RelationCountInfo relationInOutCount(String vertexId, String relationshipCode) {
         return relationDao.relationInOutCount(vertexId, relationshipCode);
+    }
+    
+    /**
+     * 获取节点间的最短路径
+     *
+     * @param fromVertexId 起点id
+     * @param toVertexId   终点id
+     * @param degree       最大度数
+     * @return List<RelationInfo> 路径
+     */
+    @Override
+    public List<RelationInfo> shortestPathToVertex(String fromVertexId, String toVertexId,
+                                                   @Nullable Integer degree) {
+        return relationDao.shortestPathToVertex(fromVertexId, toVertexId, degree);
     }
 }

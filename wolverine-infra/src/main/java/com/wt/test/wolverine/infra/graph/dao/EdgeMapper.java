@@ -2,6 +2,7 @@ package com.wt.test.wolverine.infra.graph.dao;
 
 import com.wt.test.wolverine.infra.graph.model.EdgeCountDO;
 import com.wt.test.wolverine.infra.graph.model.EdgeDO;
+import com.wt.test.wolverine.infra.graph.model.PathDO;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.Nullable;
 
@@ -101,4 +102,8 @@ public interface EdgeMapper {
      */
     EdgeCountDO edgeInOutCount(@Param("vertexId") String vertexId,
                                @Param("edgeType") String edgeType);
+    
+    PathDO shortestPath(@Param("fromVertexId") String fromVertexId,
+                                @Param("toVertexId") String toVertexId,
+                                @Param("degree") @Nullable Integer degree);
 }

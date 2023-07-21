@@ -32,4 +32,15 @@ public class VertexUtil {
         int separatorIndex = vertexId.indexOf(VERTEX_ID_SEPARATOR);
         return vertexId.substring(separatorIndex + 1);
     }
+    
+    /**
+     * 获取业务类型
+     *
+     * @param vertexId 节点id
+     * @return 业务类型
+     */
+    public static String getBizType(String vertexId) {
+        int separatorIndex = vertexId.indexOf(VERTEX_ID_SEPARATOR);
+        return vertexId.substring(0, separatorIndex);
+    }
 }

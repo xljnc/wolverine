@@ -8,6 +8,7 @@ import com.wt.test.wolverine.infra.graph.dao.EdgeMapper;
 import com.wt.test.wolverine.infra.graph.model.EdgeCountDO;
 import com.wt.test.wolverine.infra.graph.model.EdgeDO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -135,6 +136,20 @@ public class RelationDao {
     public RelationCountInfo relationInOutCount(String vertexId, String relationshipCode) {
         EdgeCountDO countDO = edgeMapper.edgeInOutCount(vertexId, relationshipCode);
         return EntityConverter.INSTANCE.toRelationCountInfo(countDO);
+    }
+    
+    /**
+     * 查询节点间的最短路径
+     *
+     * @param fromVertexId 起始节点id
+     * @param toVertexId   终点节点id
+     * @param degree       度数
+     * @return 最短路径
+     */
+    public List<RelationInfo> shortestPathToVertex(String fromVertexId, String toVertexId,
+                                                   @Nullable Integer degree) {
+        List<EdgeDO> edgeDOList = edgeMapper.shortestPath(fromVertexId, toVertexId, degree).getEdgeDOList();
+        return EntityConverter.INSTANCE.toRelationInfoList(edgeDOList);
     }
     
 }

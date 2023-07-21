@@ -70,4 +70,13 @@
         return count(distinct e1) as outCount , count(distinct e2) as inCount
     </select>
 
+    <select id="shortestPath" resultType="com.wt.test.wolverine.infra.graph.model.PathDO">
+        MATCH p = shortestPath((v1)-[e*..
+        @if ( isNotEmpty( degree ) ) {
+        ${ degree }
+        @}
+        ]->(v2))
+        WHERE id(v1) == '${ fromVertexId }' and id(v2) == '${ toVertexId }'
+        RETURN p;
+    </select>
 </mapper>

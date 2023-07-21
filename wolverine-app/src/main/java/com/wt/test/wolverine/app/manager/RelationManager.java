@@ -118,7 +118,9 @@ public class RelationManager {
         String vertexAId = VertexUtil.createVertexId(biDirectionDTO.getBizTypeA(), biDirectionDTO.getBizIdA());
         String vertexBId = VertexUtil.createVertexId(biDirectionDTO.getBizTypeB(), biDirectionDTO.getBizIdB());
         List<RelationInfo> relationInfoList = relationService.relationBiDirection(vertexAId, vertexBId, biDirectionDTO.getRelationshipCodes());
-        return RelationVO.builder().relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList)).build();
+        return RelationVO.builder()
+                .relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList))
+                .build();
     }
     
     /**
@@ -129,7 +131,7 @@ public class RelationManager {
      */
     private RelationshipInfo getRelationship(String relationshipCode) {
         RelationshipInfo relationshipInfo = relationshipService.getRelationship(relationshipCode);
-        RelationshipUtil.relationshipExist(relationshipInfo,relationshipCode);
+        RelationshipUtil.relationshipExist(relationshipInfo, relationshipCode);
         return relationshipInfo;
     }
     
@@ -215,6 +217,26 @@ public class RelationManager {
         return RelationInOutVO.builder()
                 .outCount(relationCountInfo.getOutCount())
                 .inCount(relationCountInfo.getInCount())
+                .build();
+    }
+    
+    /**
+     * 查询节点间的最短路径
+     *
+     * @param pathDTO 路径dto
+     * @return RelationVO
+     */
+    public RelationVO shortestPathToVertex(PathDTO pathDTO) {
+        //需要先校验业务类型是否存在
+        BusinessInfo fromBusiness = businessService.getBusiness(pathDTO.getFromType());
+        BusinessUtil.businessExist(fromBusiness, pathDTO.getFromType());
+        BusinessInfo toBusiness = businessService.getBusiness(pathDTO.getToType());
+        BusinessUtil.businessExist(toBusiness, pathDTO.getToType());
+        String fromVertexId = VertexUtil.createVertexId(pathDTO.getFromType(), pathDTO.getFromId());
+        String toVertexId = VertexUtil.createVertexId(pathDTO.getToType(), pathDTO.getToId());
+        List<RelationInfo> relationInfoList = relationService.shortestPathToVertex(fromVertexId, toVertexId, pathDTO.getDegree());
+        return RelationVO.builder()
+                .relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList))
                 .build();
     }
     

@@ -2,6 +2,7 @@ package com.wt.test.wolverine.domain.service;
 
 import com.wt.test.wolverine.domain.entity.RelationCountInfo;
 import com.wt.test.wolverine.domain.entity.RelationInfo;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -70,7 +71,7 @@ public interface RelationService {
      * @return List<RelationInfo> 关系列表
      */
     List<RelationInfo> queryRelation(String relationshipCode, String fromVertexId,
-                      String toVertexId, Integer pageId, Integer pageSize);
+                                     String toVertexId, Integer pageId, Integer pageSize);
     
     
     /**
@@ -90,4 +91,15 @@ public interface RelationService {
      * @return 关系的出入数量
      */
     RelationCountInfo relationInOutCount(String vertexId, String relationshipCode);
+    
+    /**
+     * 获取节点间的最短路径
+     *
+     * @param fromVertexId 起点id
+     * @param toVertexId   终点id
+     * @param degree       最大度数
+     * @return List<RelationInfo> 路径
+     */
+    List<RelationInfo> shortestPathToVertex(String fromVertexId, String toVertexId,
+                                            @Nullable Integer degree);
 }

@@ -72,4 +72,12 @@ public interface CommandConverter {
      */
     VertexMultiDegreePageDTO toVertexMultiDegreePageDTO(VertexMultiDegreePageQuery pageQuery);
     
+    /**
+     * PathQuery 转 PathDTO
+     *
+     * @param pathQuery PathQuery
+     * @return PathDTO
+     */
+    PathDTO toPathDTO(PathQuery pathQuery);
+    
 }
