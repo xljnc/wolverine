@@ -103,7 +103,15 @@ public interface EdgeMapper {
     EdgeCountDO edgeInOutCount(@Param("vertexId") String vertexId,
                                @Param("edgeType") String edgeType);
     
+    /**
+     * 节点间的最短路径
+     *
+     * @param fromVertexId 起点id
+     * @param toVertexId   终点id
+     * @param degree       度数
+     * @return com.wt.test.wolverine.infra.graph.model.PathDO
+     */
     PathDO shortestPath(@Param("fromVertexId") String fromVertexId,
-                                @Param("toVertexId") String toVertexId,
-                                @Param("degree") @Nullable Integer degree);
+                        @Param("toVertexId") String toVertexId,
+                        @Param("degree") @Nullable Integer degree);
 }

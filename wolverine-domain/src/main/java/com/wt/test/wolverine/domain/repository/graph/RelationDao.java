@@ -7,11 +7,14 @@ import com.wt.test.wolverine.domain.entity.RelationInfo;
 import com.wt.test.wolverine.infra.graph.dao.EdgeMapper;
 import com.wt.test.wolverine.infra.graph.model.EdgeCountDO;
 import com.wt.test.wolverine.infra.graph.model.EdgeDO;
+import com.wt.test.wolverine.infra.graph.model.PathDO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 关系 repository
@@ -148,8 +151,11 @@ public class RelationDao {
      */
     public List<RelationInfo> shortestPathToVertex(String fromVertexId, String toVertexId,
                                                    @Nullable Integer degree) {
-        List<EdgeDO> edgeDOList = edgeMapper.shortestPath(fromVertexId, toVertexId, degree).getEdgeDOList();
-        return EntityConverter.INSTANCE.toRelationInfoList(edgeDOList);
+        PathDO pathDO = edgeMapper.shortestPath(fromVertexId, toVertexId, degree);
+        return Optional.ofNullable(pathDO)
+                .map(PathDO::getEdgeDOList)
+                .map(EntityConverter.INSTANCE::toRelationInfoList)
+                .orElse(Collections.emptyList());
     }
     
 }

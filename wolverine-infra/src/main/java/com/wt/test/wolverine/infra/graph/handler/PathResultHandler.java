@@ -29,8 +29,7 @@ public class PathResultHandler extends AbstractResultHandler<PathDO, PathDO> {
     private final JsonUtil jsonUtil;
     
     @Override
-    public PathDO handle(PathDO newResult, ResultSet result, Class resultType)
-            throws NoSuchFieldException, IllegalAccessException, InstantiationException {
+    public PathDO handle(PathDO newResult, ResultSet result, Class resultType) {
         ResultSet.Record record = result.rowValues(0);
         return handle(newResult, record);
     }
