@@ -58,15 +58,7 @@ public class RelationOpenController {
         return BaseResponse.success(relationDTO);
     }
     
-    /**
-     * 分页获取关系
-     */
-    @PostMapping("/v1/page")
-    public BaseResponse<RelationPageVO> pageRelation(@RequestBody @Valid RelationPageQuery pageQuery) {
-        RelationPageQueryDTO pageQueryDTO = CommandConverter.INSTANCE.toRelationPageQueryDTO(pageQuery);
-        RelationPageVO pageVO = relationManager.pageRelation(pageQueryDTO);
-        return BaseResponse.success(pageVO);
-    }
+
     
     /**
      * 获取节点间的双向关系
@@ -88,5 +80,13 @@ public class RelationOpenController {
         return BaseResponse.success(inOutVO);
     }
     
-    
+    /**
+     * 分页获取关系
+     */
+    @PostMapping("/v1/page")
+    public BaseResponse<RelationPageVO> pageRelation(@RequestBody @Valid RelationPageQuery pageQuery) {
+        RelationPageQueryDTO pageQueryDTO = CommandConverter.INSTANCE.toRelationPageQueryDTO(pageQuery);
+        RelationPageVO pageVO = relationManager.openPageRelation(pageQueryDTO);
+        return BaseResponse.success(pageVO);
+    }
 }

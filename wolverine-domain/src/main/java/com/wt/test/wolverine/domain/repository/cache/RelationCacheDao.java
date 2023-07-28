@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 public class RelationCacheDao {
     
     private static final String RELATION_REDIS_KEY = "relation::%s::%s::%s";
+    
+    private static final String RELATION_COUNT_REDIS_KEY = "relation::count::%s::%s::%d";
     
     private final RedisUtil redisUtil;
     
@@ -72,9 +75,9 @@ public class RelationCacheDao {
      * @param relationInfo 关系
      * @return boolean 是否成功
      */
-    public boolean deleteRelation(RelationInfo relationInfo) {
+    public void deleteRelation(RelationInfo relationInfo) {
         String relationRedisKey = createRelationRedisKey(relationInfo);
-        return redisUtil.deleteKey(relationRedisKey);
+        redisUtil.deleteKey(relationRedisKey);
     }
     
     /**
@@ -97,5 +100,57 @@ public class RelationCacheDao {
      */
     private static String createRelationRedisKey(String relationshipCode, String fromId, String toId) {
         return String.format(RELATION_REDIS_KEY, relationshipCode, fromId, toId);
+    }
+    
+    /**
+     * 缓存 关系 数量
+     *
+     * @param relationshipCode 关系类型
+     * @param vertexId         节点id
+     * @param direction        方向
+     * @param count            关系
+     */
+    public boolean increRelationCount(String relationshipCode, String vertexId, int direction, Long count) {
+        String countRedisKey = createCountRedisKey(relationshipCode, vertexId, direction);
+        Long result = redisUtil.increNoneNegative(countRedisKey, count);
+        return result >= 0L;
+    }
+    
+    /**
+     * 缓存 关系 数量
+     *
+     * @param relationshipCode 关系类型
+     * @param vertexId         节点id
+     * @param count            关系
+     */
+    public void cacheRelationCount(String relationshipCode, String vertexId, int direction, Long count) {
+        String countRedisKey = createCountRedisKey(relationshipCode, vertexId, direction);
+        redisUtil.setString(countRedisKey, String.valueOf(count));
+    }
+    
+    /**
+     * 获取 关系 数量
+     *
+     * @param relationshipCode 关系类型
+     * @param vertexId         节点id
+     * @param direction        关系方向
+     */
+    public Long getRelationCount(String relationshipCode, String vertexId, int direction) {
+        String countRedisKey = createCountRedisKey(relationshipCode, vertexId, direction);
+        String countStr = redisUtil.getString(countRedisKey);
+        return Optional.ofNullable(countStr).map(Long::valueOf).orElse(null);
+    }
+    
+    
+    /**
+     * 组装 关系 redis key
+     *
+     * @param relationshipCode 关系类型
+     * @param vertexId         节点id
+     * @param direction        方向,参考CommonConstants
+     * @return 关系 redis key
+     */
+    private static String createCountRedisKey(String relationshipCode, String vertexId, int direction) {
+        return String.format(RELATION_COUNT_REDIS_KEY, relationshipCode, vertexId, direction);
     }
 }

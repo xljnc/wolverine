@@ -61,6 +61,26 @@ public interface RelationService {
     Long getRelationCount(String relationshipCode, String fromVertexId, String toVertexId);
     
     /**
+     * 从缓存获取关系数量
+     *
+     * @param relationshipCode 关系类型code
+     * @param vertexId         节点id
+     * @param direction        关系方向
+     * @return 关系数量
+     */
+    Long getRelationCountWithCache(String relationshipCode, String vertexId, int direction);
+    
+    /**
+     * 更新关系数量缓存
+     *
+     * @param relationshipCode 关系类型code
+     * @param vertexId         节点id
+     * @param direction        关系方向
+     * @param count            关系数量
+     */
+    void updateRelationCountCache(String relationshipCode, String vertexId, int direction, Long count);
+    
+    /**
      * 获取关系数量
      *
      * @param relationshipCode 关系类型code

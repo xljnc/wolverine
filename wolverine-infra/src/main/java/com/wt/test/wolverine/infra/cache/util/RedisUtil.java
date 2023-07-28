@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.data.redis.domain.geo.Metrics;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -21,15 +23,37 @@ import java.util.stream.Collectors;
  */
 @Component
 public class RedisUtil {
-
+    
+    
+    private static final String INCRE_NONE_NEGATIVE_SCRIPT =
+            "local keyExisted = redis.call('EXISTS',KEYS[1] \n)" +
+                    "if keyExisted then \n" +
+                    " return redis.call('INCREBY', KEYS[1], ARGV[1] \n)" +
+                    "else \n" +
+                    " return -1 \n" +
+                    "end \n";
+    private static final RedisScript<Long> INCRE_NONE_NEGATIVE_REDIS_SCRIPT
+            = new DefaultRedisScript<>(INCRE_NONE_NEGATIVE_SCRIPT, Long.class);
+    
+    
     @Resource
     @Qualifier("jacksonRedisTemplate")
     private RedisTemplate<String, Object> jacksonRedisTemplate;
-
+    
     @Resource
     @Qualifier("stringRedisTemplate")
     private StringRedisTemplate stringRedisTemplate;
-
+    
+    /**
+     * @param key
+     * @return boolean 如果key存在返回true，否则返回false
+     * @description 检查Key是否存在
+     */
+    public Long increNoneNegative(String key, Long increCount) {
+        return stringRedisTemplate.execute(INCRE_NONE_NEGATIVE_REDIS_SCRIPT, Collections.singletonList(key),
+                increCount);
+    }
+    
     /**
      * @param key
      * @return boolean 如果key存在返回true，否则返回false
@@ -38,7 +62,7 @@ public class RedisUtil {
     public boolean existsKey(String key) {
         return stringRedisTemplate.hasKey(key);
     }
-
+    
     /**
      * @param key
      * @return boolean 删除key
@@ -47,7 +71,7 @@ public class RedisUtil {
     public boolean deleteKey(String key) {
         return stringRedisTemplate.delete(key);
     }
-
+    
     /**
      * 通过前缀模糊匹配删除Key
      * 注意：这是个危险操作，因为keys命令的复杂度是O(n),执行速度非常慢
@@ -61,7 +85,7 @@ public class RedisUtil {
         Set<String> keys = stringRedisTemplate.keys(prefix + "*");
         return stringRedisTemplate.delete(keys);
     }
-
+    
     /**
      * 通过后缀模糊匹配删除Key
      * 注意：这是个危险操作，因为keys命令的复杂度是O(n),执行速度非常慢
@@ -75,15 +99,15 @@ public class RedisUtil {
         Set<String> keys = stringRedisTemplate.keys("*" + suffix);
         return stringRedisTemplate.delete(keys);
     }
-
-
+    
+    
     /**
      * 获取String类型的Value
      **/
     public String getString(String key) {
         return stringRedisTemplate.opsForValue().get(key);
     }
-
+    
     /**
      * @param key
      * @param value
@@ -93,7 +117,7 @@ public class RedisUtil {
     public void setString(String key, String value) {
         stringRedisTemplate.opsForValue().set(key, value);
     }
-
+    
     /**
      * 设置String类型的Value
      *
@@ -106,7 +130,7 @@ public class RedisUtil {
     public void setString(String key, String value, Long expireTime, TimeUnit timeUnit) {
         stringRedisTemplate.opsForValue().set(key, value, expireTime, timeUnit);
     }
-
+    
     /**
      * 获取过期时间
      *
@@ -117,7 +141,7 @@ public class RedisUtil {
     public Long getExpireTime(String key, TimeUnit timeUnit) {
         return stringRedisTemplate.getExpire(key, timeUnit);
     }
-
+    
     /**
      * 设置过期时间
      *
@@ -129,7 +153,7 @@ public class RedisUtil {
     public Boolean setExpireTime(String key, Long expireTime, TimeUnit timeUnit) {
         return stringRedisTemplate.expire(key, expireTime, timeUnit);
     }
-
+    
     /**
      * 存储可序列化对象
      *
@@ -141,7 +165,7 @@ public class RedisUtil {
     public void setObject(String key, Object value, Long expireTime, TimeUnit timeUnit) {
         jacksonRedisTemplate.opsForValue().set(key, value, expireTime, timeUnit);
     }
-
+    
     /**
      * 存储可序列化对象
      *
@@ -151,21 +175,21 @@ public class RedisUtil {
     public void setObject(String key, Object value) {
         jacksonRedisTemplate.opsForValue().set(key, value);
     }
-
+    
     /**
      * 获取对象
      **/
     public Object getObject(String key) {
         return jacksonRedisTemplate.opsForValue().get(key);
     }
-
+    
     /**
      * 获取指定类型对象
      **/
     public <T> T getGenericObject(String key) {
         return (T) jacksonRedisTemplate.opsForValue().get(key);
     }
-
+    
     /**
      * 扫描key
      *
@@ -189,7 +213,7 @@ public class RedisUtil {
         }
         return keys;
     }
-
+    
     /**
      * 位操作, set
      *
@@ -201,7 +225,7 @@ public class RedisUtil {
     public Boolean setBit(String key, long offset, boolean value) {
         return stringRedisTemplate.opsForValue().setBit(key, offset, value);
     }
-
+    
     /**
      * 位操作,get
      *
@@ -212,7 +236,7 @@ public class RedisUtil {
     public Boolean getBit(String key, long offset) {
         return stringRedisTemplate.opsForValue().getBit(key, offset);
     }
-
+    
     /**
      * 位操作,统计被设置为1的位数
      *
@@ -224,7 +248,7 @@ public class RedisUtil {
     public Long bitCount(String key, long start, long end) {
         return stringRedisTemplate.execute((RedisCallback<Long>) conn -> conn.bitCount(key.getBytes(), start, end));
     }
-
+    
     /**
      * 存储Hash
      *
@@ -235,7 +259,7 @@ public class RedisUtil {
     public void setHash(String key, String hashKey, Object value) {
         stringRedisTemplate.opsForHash().put(key, hashKey, value);
     }
-
+    
     /**
      * 获取hash key存储值
      *
@@ -245,7 +269,7 @@ public class RedisUtil {
     public <T> T getHash(String key, String hashKey) {
         return (T) stringRedisTemplate.opsForHash().get(key, hashKey);
     }
-
+    
     /**
      * @param key     key
      * @param hashKey hash键
@@ -255,7 +279,7 @@ public class RedisUtil {
     public Boolean setHashValueIfAbsent(String key, String hashKey, Object value) {
         return stringRedisTemplate.opsForHash().putIfAbsent(key, hashKey, value);
     }
-
+    
     /**
      * 是否存在 hash key
      *
@@ -266,7 +290,7 @@ public class RedisUtil {
     public Boolean containsHashKey(String key, String hashKey) {
         return stringRedisTemplate.opsForHash().hasKey(key, hashKey);
     }
-
+    
     /**
      * 批量获取 hash key
      *
@@ -277,7 +301,7 @@ public class RedisUtil {
     public List<Object> getMultiHashValues(String key, Collection<Object> hashKeys) {
         return stringRedisTemplate.opsForHash().multiGet(key, hashKeys);
     }
-
+    
     /**
      * 扫描key
      *
@@ -301,7 +325,7 @@ public class RedisUtil {
         }
         return entries;
     }
-
+    
     /**
      * 判断Set是否包含指定对象
      *
@@ -312,7 +336,7 @@ public class RedisUtil {
     public Boolean isSetMember(String key, String candidate) {
         return stringRedisTemplate.opsForSet().isMember(key, candidate);
     }
-
+    
     /**
      * 扫描key
      *
@@ -336,7 +360,7 @@ public class RedisUtil {
         }
         return values;
     }
-
+    
     /**
      * value加入到zset
      *
@@ -348,7 +372,7 @@ public class RedisUtil {
     public Boolean addZSetValue(String key, String value, double score) {
         return stringRedisTemplate.opsForZSet().add(key, value, score);
     }
-
+    
     /**
      * value加入到HyperLogLog
      *
@@ -359,7 +383,7 @@ public class RedisUtil {
     public Long addHyperLogLogValue(String key, String... values) {
         return stringRedisTemplate.opsForHyperLogLog().add(key, values);
     }
-
+    
     /**
      * HyperLogLog基数
      * 如果是多个HyperLogLog，则返回基数估值之和
@@ -370,7 +394,7 @@ public class RedisUtil {
     public Long sizeOfHyperLogLog(String... keys) {
         return stringRedisTemplate.opsForHyperLogLog().size(keys);
     }
-
+    
     /**
      * 合并HyperLogLog
      *
@@ -381,8 +405,8 @@ public class RedisUtil {
     public Long mergeHyperLogLog(String destination, String... sourceKeys) {
         return stringRedisTemplate.opsForHyperLogLog().union(destination, sourceKeys);
     }
-
-
+    
+    
     /**
      * 添加geo信息
      *
@@ -396,7 +420,7 @@ public class RedisUtil {
         Point point = new Point(x, y);
         return stringRedisTemplate.opsForGeo().add(key, point, member);
     }
-
+    
     /**
      * 批量添加geo信息
      *
@@ -410,7 +434,7 @@ public class RedisUtil {
                 new Point(member.getValue()[0], member.getValue()[1])));
         return stringRedisTemplate.opsForGeo().add(key, memberCoordinateMap);
     }
-
+    
     /**
      * 获取geo距离
      *
@@ -424,7 +448,7 @@ public class RedisUtil {
         Optional<Distance> distanceOptional = Optional.ofNullable(stringRedisTemplate.opsForGeo().distance(key, member1, member2, metricUnit.getMappedMetrics()));
         return distanceOptional.map(Distance::getValue).orElse(null);
     }
-
+    
     /**
      * 获取geo信息
      *
@@ -440,7 +464,7 @@ public class RedisUtil {
                 new Double[]{point.getX(), point.getY()}
         ).collect(Collectors.toList());
     }
-
+    
     /**
      * 获取geo hash
      *
@@ -451,7 +475,7 @@ public class RedisUtil {
     public List<String> geoHash(String key, String... members) {
         return stringRedisTemplate.opsForGeo().hash(key, members);
     }
-
+    
     /**
      * 删除geo信息
      *
@@ -462,16 +486,16 @@ public class RedisUtil {
     public Long removeGeo(String key, String... members) {
         return stringRedisTemplate.opsForGeo().remove(key, members);
     }
-
+    
     public enum MetricUnit {
         METERS("m"), KILOMETERS("km"), MILES("mi"), FEET("ft");
-
+        
         private final String abbreviation;
-
+        
         MetricUnit(String abbreviation) {
             this.abbreviation = abbreviation;
         }
-
+        
         Metrics getMappedMetrics() {
             for (Metrics item : Metrics.values()) {
                 if (item.getAbbreviation().equals(this.abbreviation))

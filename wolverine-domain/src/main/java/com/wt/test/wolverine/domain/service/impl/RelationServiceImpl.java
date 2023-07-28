@@ -4,9 +4,11 @@ import cn.hutool.core.date.DateUtil;
 import com.wt.test.wolverine.domain.common.CommonConstants;
 import com.wt.test.wolverine.domain.entity.RelationCountInfo;
 import com.wt.test.wolverine.domain.entity.RelationInfo;
+import com.wt.test.wolverine.domain.event.UpdateRelationCountEvent;
 import com.wt.test.wolverine.domain.repository.cache.RelationCacheDao;
 import com.wt.test.wolverine.domain.repository.graph.RelationDao;
 import com.wt.test.wolverine.domain.service.RelationService;
+import com.wt.test.wolverine.domain.util.EventUtil;
 import com.wt.test.wolverine.infra.lock.util.LockUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.Nullable;
@@ -29,6 +31,7 @@ public class RelationServiceImpl implements RelationService {
     
     private static final String RELATION_LOCK_NAME = "lock::relation::%s::%s::%s";
     
+    private static final String RELATION_COUNT_LOCK_NAME = "lock::relation::count::%s::%s::%d";
     
     private final RelationDao relationDao;
     
@@ -49,6 +52,8 @@ public class RelationServiceImpl implements RelationService {
         relationDao.createRelation(relationInfo);
         //清除缓存，防止缓存了假的关系
         relationCacheDao.deleteRelation(relationInfo);
+        //缓存关系数量
+        updateRelationCount(relationInfo, 1L);
     }
     
     /**
@@ -60,6 +65,33 @@ public class RelationServiceImpl implements RelationService {
     public void deleteRelation(RelationInfo relationInfo) {
         relationDao.deleteRelation(relationInfo);
         relationCacheDao.deleteRelation(relationInfo);
+        //缓存关系数量
+        updateRelationCount(relationInfo, -1L);
+    }
+    
+    /**
+     * 更新关系数量缓存
+     *
+     * @param relationInfo 关系信息
+     * @param count        变更数量
+     */
+    private void updateRelationCount(RelationInfo relationInfo, Long count) {
+        //缓存关系数量,入向
+        boolean countSuccess = relationCacheDao.increRelationCount(relationInfo.getRelationshipCode(),
+                relationInfo.getToVertexId(), CommonConstants.RELATION_DIRECTION_IN, count);
+        if (!countSuccess) {
+            UpdateRelationCountEvent inCountEvent = UpdateRelationCountEvent.builder()
+                    .relationInfo(relationInfo).direction(CommonConstants.RELATION_DIRECTION_IN).build();
+            EventUtil.publishEvent(inCountEvent);
+        }
+        //缓存关系数量,出向
+        countSuccess = relationCacheDao.increRelationCount(relationInfo.getRelationshipCode(),
+                relationInfo.getFromVertexId(), CommonConstants.RELATION_DIRECTION_OUT, count);
+        if (!countSuccess) {
+            UpdateRelationCountEvent outCountEvent = UpdateRelationCountEvent.builder()
+                    .relationInfo(relationInfo).direction(CommonConstants.RELATION_DIRECTION_OUT).build();
+            EventUtil.publishEvent(outCountEvent);
+        }
     }
     
     /**
@@ -153,6 +185,62 @@ public class RelationServiceImpl implements RelationService {
     }
     
     /**
+     * 从缓存获取关系数量
+     *
+     * @param relationshipCode 关系类型code
+     * @param vertexId         节点id
+     * @param direction        关系方向
+     * @return 关系数量
+     */
+    @Override
+    public Long getRelationCountWithCache(String relationshipCode, String vertexId, int direction) {
+        Long count = relationCacheDao.getRelationCount(relationshipCode, vertexId, direction);
+        if (Objects.isNull(count)) {
+            String lockName = String.format(RELATION_COUNT_LOCK_NAME, relationshipCode, vertexId, direction);
+            List<String> args = Arrays.asList(relationshipCode, vertexId, String.valueOf(direction));
+            count = lockUtil.lockAndExecute(lockName, this::getRelationCountWithLock, args);
+        }
+        return count;
+    }
+    
+    /**
+     * 查询关系, 需要加锁
+     *
+     * @param args 参数, arg[0]:relationshipCode, arg[1]:fromVertexId, arg[2]:toVertexId
+     */
+    private Long getRelationCountWithLock(List<String> args) {
+        String relationshipCode = args.get(0);
+        String vertexId = args.get(1);
+        Integer direction = Integer.valueOf(args.get(2));
+        Long count = relationCacheDao.getRelationCount(relationshipCode, vertexId, direction);
+        if (Objects.isNull(count)) {
+            //查db
+            String fromVertexId = null, toVertexId = null;
+            if (Objects.equals(direction, CommonConstants.RELATION_DIRECTION_OUT)) {
+                fromVertexId = vertexId;
+            } else {
+                toVertexId = vertexId;
+            }
+            count = getRelationCount(relationshipCode, fromVertexId, toVertexId);
+            relationCacheDao.cacheRelationCount(relationshipCode, vertexId, direction, count);
+        }
+        return count;
+    }
+    
+    /**
+     * 更新关系数量缓存
+     *
+     * @param relationshipCode 关系类型code
+     * @param vertexId         节点id
+     * @param direction        关系方向
+     * @param count            关系数量
+     */
+    @Override
+    public void updateRelationCountCache(String relationshipCode, String vertexId, int direction, Long count) {
+        relationCacheDao.cacheRelationCount(relationshipCode, vertexId, direction, count);
+    }
+    
+    /**
      * 获取关系数量
      *
      * @param relationshipCode 关系类型code
@@ -163,8 +251,8 @@ public class RelationServiceImpl implements RelationService {
      * @return List<RelationInfo> 关系列表
      */
     @Override
-    public List<RelationInfo> queryRelation(String relationshipCode, String fromVertexId,
-                                            String toVertexId, Integer pageId, Integer pageSize) {
+    public List<RelationInfo> queryRelation(String relationshipCode, String fromVertexId, String toVertexId,
+                                            Integer pageId, Integer pageSize) {
         Long offset = (pageId - 1) * (long) pageSize;
         return relationDao.queryRelation(relationshipCode, fromVertexId, toVertexId, Long.valueOf(pageSize), offset);
     }
@@ -202,8 +290,7 @@ public class RelationServiceImpl implements RelationService {
      * @return List<RelationInfo> 路径
      */
     @Override
-    public List<RelationInfo> shortestPathToVertex(String fromVertexId, String toVertexId,
-                                                   @Nullable Integer degree) {
+    public List<RelationInfo> shortestPathToVertex(String fromVertexId, String toVertexId, @Nullable Integer degree) {
         return relationDao.shortestPathToVertex(fromVertexId, toVertexId, degree);
     }
 }

@@ -1,6 +1,8 @@
 package com.wt.test.wolverine.app.manager;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.wt.test.wolverine.app.common.component.exception.BizException;
+import com.wt.test.wolverine.app.common.component.response.ResponseCode;
 import com.wt.test.wolverine.app.converter.DtoConverter;
 import com.wt.test.wolverine.app.dto.*;
 import com.wt.test.wolverine.app.util.BusinessUtil;
@@ -9,6 +11,7 @@ import com.wt.test.wolverine.app.util.VertexUtil;
 import com.wt.test.wolverine.app.vo.RelationInOutVO;
 import com.wt.test.wolverine.app.vo.RelationPageVO;
 import com.wt.test.wolverine.app.vo.RelationVO;
+import com.wt.test.wolverine.domain.common.CommonConstants;
 import com.wt.test.wolverine.domain.entity.*;
 import com.wt.test.wolverine.domain.service.BusinessService;
 import com.wt.test.wolverine.domain.service.RelationService;
@@ -80,7 +83,7 @@ public class RelationManager {
         RelationshipInfo relationshipInfo = getRelationship(manageDTO.getRelationshipCode());
         String fromVertexId = VertexUtil.createVertexId(relationshipInfo.getFromType(), manageDTO.getFromId());
         String toVertexId = VertexUtil.createVertexId(relationshipInfo.getToType(), manageDTO.getToId());
-        //创建关系
+        //删除关系
         RelationInfo relationInfo = RelationInfo.builder().relationshipCode(manageDTO.getRelationshipCode()).fromVertexId(fromVertexId).toVertexId(toVertexId).build();
         relationService.deleteRelation(relationInfo);
     }
@@ -118,9 +121,7 @@ public class RelationManager {
         String vertexAId = VertexUtil.createVertexId(biDirectionDTO.getBizTypeA(), biDirectionDTO.getBizIdA());
         String vertexBId = VertexUtil.createVertexId(biDirectionDTO.getBizTypeB(), biDirectionDTO.getBizIdB());
         List<RelationInfo> relationInfoList = relationService.relationBiDirection(vertexAId, vertexBId, biDirectionDTO.getRelationshipCodes());
-        return RelationVO.builder()
-                .relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList))
-                .build();
+        return RelationVO.builder().relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList)).build();
     }
     
     /**
@@ -135,7 +136,67 @@ public class RelationManager {
         return relationshipInfo;
     }
     
-    public RelationPageVO pageRelation(RelationPageQueryDTO pageQueryDTO) {
+    /**
+     * 分页获取关系，c端使用
+     *
+     * @param pageQueryDTO 分页查询对象
+     * @return RelationPageVO
+     */
+    public RelationPageVO openPageRelation(RelationPageQueryDTO pageQueryDTO) {
+        if (Objects.nonNull(pageQueryDTO.getFromId()) && Objects.nonNull(pageQueryDTO.getToId())) {
+            log.error("RelationManager#openPageRelation 参数异常,参数:{}", pageQueryDTO);
+            throw new BizException(ResponseCode.PARAM_ERROR.getCode(), ResponseCode.PARAM_ERROR.getMessage());
+        }
+        //先查询关系类型是否存在
+        RelationshipInfo relationshipInfo = getRelationship(pageQueryDTO.getRelationshipCode());
+        return directionPage(pageQueryDTO, relationshipInfo);
+    }
+    
+    /**
+     * 分页查询，区分方向
+     * 关系数量走缓存
+     *
+     * @param pageQueryDTO     分页查询对象
+     * @param relationshipInfo 关系信息
+     * @return com.wt.test.wolverine.app.vo.RelationPageVO
+     */
+    private RelationPageVO directionPage(RelationPageQueryDTO pageQueryDTO, RelationshipInfo relationshipInfo) {
+        String vertexId = null;
+        int direction = 0;
+        String fromVertexId = null;
+        String toVertexId = null;
+        if (StringUtils.isNotBlank(pageQueryDTO.getFromId())) {
+            vertexId = VertexUtil.createVertexId(relationshipInfo.getFromType(), pageQueryDTO.getFromId());
+            direction = CommonConstants.RELATION_DIRECTION_OUT;
+            fromVertexId = vertexId;
+        } else {
+            vertexId = VertexUtil.createVertexId(relationshipInfo.getToType(), pageQueryDTO.getToId());
+            direction = CommonConstants.RELATION_DIRECTION_IN;
+            toVertexId = vertexId;
+        }
+        //从缓存获取关系分页总量
+        Long count = relationService.getRelationCountWithCache(pageQueryDTO.getRelationshipCode(), vertexId, direction);
+        if (Objects.isNull(count)) {
+            count = relationService.getRelationCount(pageQueryDTO.getRelationshipCode(), fromVertexId, toVertexId);
+        }
+        if (Objects.equals(count, 0L)) {
+            return RelationPageVO.createEmptyVo(pageQueryDTO.getPageId(), pageQueryDTO.getPageSize());
+        }
+        //获取关系当前页
+        List<RelationInfo> relationInfoList = relationService.queryRelation(pageQueryDTO.getRelationshipCode(),
+                fromVertexId, toVertexId, pageQueryDTO.getPageId(), pageQueryDTO.getPageSize());
+        return RelationPageVO.builder().relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList))
+                .count(count).pageId(pageQueryDTO.getPageId()).pageSize(pageQueryDTO.getPageSize()).build();
+    }
+    
+    
+    /**
+     * 分页获取关系，内部使用
+     *
+     * @param pageQueryDTO 分页查询对象
+     * @return RelationPageVO
+     */
+    public RelationPageVO innerPageRelation(RelationPageQueryDTO pageQueryDTO) {
         //先查询关系类型是否存在
         RelationshipInfo relationshipInfo = getRelationship(pageQueryDTO.getRelationshipCode());
         String fromVertexId = null;
@@ -144,7 +205,7 @@ public class RelationManager {
             fromVertexId = VertexUtil.createVertexId(relationshipInfo.getFromType(), pageQueryDTO.getFromId());
         }
         if (StringUtils.isNotBlank(pageQueryDTO.getToId())) {
-            toVertexId = VertexUtil.createVertexId(relationshipInfo.getFromType(), pageQueryDTO.getToId());
+            toVertexId = VertexUtil.createVertexId(relationshipInfo.getToType(), pageQueryDTO.getToId());
         }
         //获取关系分页总量
         Long count = relationService.getRelationCount(pageQueryDTO.getRelationshipCode(), fromVertexId, toVertexId);
@@ -155,11 +216,7 @@ public class RelationManager {
         List<RelationInfo> relationInfoList = relationService.queryRelation(pageQueryDTO.getRelationshipCode(),
                 fromVertexId, toVertexId, pageQueryDTO.getPageId(), pageQueryDTO.getPageSize());
         return RelationPageVO.builder().relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList))
-                .count(count)
-                .pageId(pageQueryDTO.getPageId())
-                .pageSize(pageQueryDTO.getPageSize())
-                .build();
-        
+                .count(count).pageId(pageQueryDTO.getPageId()).pageSize(pageQueryDTO.getPageSize()).build();
     }
     
     /**
@@ -177,26 +234,18 @@ public class RelationManager {
         String vertexId = VertexUtil.createVertexId(inOutDTO.getBizType(), inOutDTO.getBizId());
         List<RelationInfo> relationInfoList = relationService.relationInOut(vertexId, inOutDTO.getRelationshipCode());
         if (CollectionUtils.isEmpty(relationInfoList)) {
-            return RelationInOutVO.builder()
-                    .inCount(0L).inRelations(Collections.emptyList())
-                    .outCount(0L).outRelations(Collections.emptyList())
-                    .build();
+            return RelationInOutVO.builder().inCount(0L).inRelations(Collections.emptyList()).outCount(0L).outRelations(Collections.emptyList()).build();
         }
         List<RelationDTO> inRelations = new ArrayList<>();
         List<RelationDTO> outRelations = new ArrayList<>();
-        relationInfoList.stream().map(DtoConverter.INSTANCE::toRelationDTO).forEach(
-                relationDTO -> {
-                    if (Objects.equals(relationDTO.getToId(), inOutDTO.getBizId())) {
-                        inRelations.add(relationDTO);
-                    } else {
-                        outRelations.add(relationDTO);
-                    }
-                }
-        );
-        return RelationInOutVO.builder()
-                .inCount((long) (inRelations.size())).inRelations(inRelations)
-                .outCount((long) outRelations.size()).outRelations(outRelations)
-                .build();
+        relationInfoList.stream().map(DtoConverter.INSTANCE::toRelationDTO).forEach(relationDTO -> {
+            if (Objects.equals(relationDTO.getToId(), inOutDTO.getBizId())) {
+                inRelations.add(relationDTO);
+            } else {
+                outRelations.add(relationDTO);
+            }
+        });
+        return RelationInOutVO.builder().inCount((long) (inRelations.size())).inRelations(inRelations).outCount((long) outRelations.size()).outRelations(outRelations).build();
     }
     
     
@@ -214,10 +263,7 @@ public class RelationManager {
         BusinessUtil.businessExist(bizBusiness, inOutDTO.getBizType());
         String vertexId = VertexUtil.createVertexId(inOutDTO.getBizType(), inOutDTO.getBizId());
         RelationCountInfo relationCountInfo = relationService.relationInOutCount(vertexId, inOutDTO.getRelationshipCode());
-        return RelationInOutVO.builder()
-                .outCount(relationCountInfo.getOutCount())
-                .inCount(relationCountInfo.getInCount())
-                .build();
+        return RelationInOutVO.builder().outCount(relationCountInfo.getOutCount()).inCount(relationCountInfo.getInCount()).build();
     }
     
     /**
@@ -235,9 +281,7 @@ public class RelationManager {
         String fromVertexId = VertexUtil.createVertexId(pathDTO.getFromType(), pathDTO.getFromId());
         String toVertexId = VertexUtil.createVertexId(pathDTO.getToType(), pathDTO.getToId());
         List<RelationInfo> relationInfoList = relationService.shortestPathToVertex(fromVertexId, toVertexId, pathDTO.getDegree());
-        return RelationVO.builder()
-                .relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList))
-                .build();
+        return RelationVO.builder().relations(DtoConverter.INSTANCE.toRelationDtoList(relationInfoList)).build();
     }
     
 }
